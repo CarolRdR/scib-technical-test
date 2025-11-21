@@ -30,6 +30,8 @@ export class CandidatesController {
         .addFileTypeValidator({
           fileType:
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          fallbackToMimetype: true,
+          skipMagicNumbersValidation: true,
         })
         .addMaxSizeValidator({ maxSize: 2 * 1024 * 1024 })
         .build({ fileIsRequired: true }),
