@@ -1,6 +1,5 @@
 import type { Express } from 'express';
 import {
-  BadRequestException,
   Body,
   Controller,
   ParseFilePipeBuilder,
@@ -10,6 +9,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { candidateErrors } from '../common/errors/candidate-errors';
 import { CandidatesService } from './candidates.service';
 import {
   CandidateUploadDto,
@@ -49,7 +49,7 @@ export class CandidatesController {
 
   private ensureUploadedFile(file: unknown): Express.Multer.File {
     if (!this.isMulterFile(file)) {
-      throw new BadRequestException('Uploaded file payload is invalid');
+      throw candidateErrors.uploadedFileInvalid();
     }
     return file;
   }
