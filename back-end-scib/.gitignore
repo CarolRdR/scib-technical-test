@@ -1,0 +1,30 @@
+# Node
+node_modules/
+dist/
+build/
+
+# Environment
+.env
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.log
+
+# Angular build cache
+frontend/.angular/
+frontend/.cache/
+frontend/.browser/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+
+# TypeScript build info
+*.tsbuildinfo
