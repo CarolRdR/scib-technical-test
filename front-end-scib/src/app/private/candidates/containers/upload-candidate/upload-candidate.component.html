@@ -5,21 +5,25 @@
     <mat-form-field appearance="outline">
       <mat-label>Nombre</mat-label>
       <input matInput formControlName="name" placeholder="Ej: Ana" />
-      <mat-error *ngIf="uploadForm.controls.name.hasError('required')">Campo obligatorio</mat-error>
-      <mat-error *ngIf="uploadForm.controls.name.hasError('maxlength')">
+      @if (uploadForm.controls.name.hasError('required')) {
+        <mat-error>Campo obligatorio</mat-error>
+      }
+      @if (uploadForm.controls.name.hasError('maxlength')) {
+        <mat-error>
         Máximo 80 caracteres
-      </mat-error>
+        </mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Apellido</mat-label>
       <input matInput formControlName="surname" placeholder="Ej: García" />
-      <mat-error *ngIf="uploadForm.controls.surname.hasError('required')">
-        Campo obligatorio
-      </mat-error>
-      <mat-error *ngIf="uploadForm.controls.surname.hasError('maxlength')">
-        Máximo 80 caracteres
-      </mat-error>
+      @if (uploadForm.controls.surname.hasError('required')) {
+        <mat-error>Campo obligatorio</mat-error>
+      }
+      @if (uploadForm.controls.surname.hasError('maxlength')) {
+        <mat-error>Máximo 80 caracteres</mat-error>
+      }
     </mat-form-field>
 
     <div class="file-field">
@@ -33,16 +37,20 @@
       <button type="button" mat-stroked-button color="primary" (click)="fileInput.click()">
         Seleccionar Excel
       </button>
-      <span class="file-name" [class.placeholder]="!selectedFileName">
-        {{ selectedFileName || 'Ningún archivo seleccionado' }}
+      <span class="file-name" [class.placeholder]="!hasSelectedFile()">
+        {{ selectedFileName() || 'Ningún archivo seleccionado' }}
       </span>
     </div>
-    <mat-error *ngIf="uploadForm.controls.file.hasError('required')">Adjunta un archivo.</mat-error>
+    @if (uploadForm.controls.file.hasError('required')) {
+      <mat-error>Adjunta un archivo.</mat-error>
+    }
 
     <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting()">
       {{ isSubmitting() ? 'Cargando...' : 'Enviar' }}
     </button>
 
-    <mat-progress-bar *ngIf="isSubmitting()" mode="indeterminate"></mat-progress-bar>
+    @if (isSubmitting()) {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
   </form>
 </mat-card>

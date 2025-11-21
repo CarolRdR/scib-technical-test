@@ -12,6 +12,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
+import * as XLSX from 'xlsx';
 import { CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
 import {
   ensureSingleDataRow,
@@ -55,6 +56,7 @@ export class UploadCandidateComponent {
 
   protected readonly isSubmitting = signal(false);
   protected readonly selectedFileName = computed(() => this.uploadForm.controls.file.value?.name ?? '');
+  protected readonly hasSelectedFile = computed(() => Boolean(this.uploadForm.controls.file.value));
 
   protected async onSubmit(): Promise<void> {
     if (this.uploadForm.invalid || this.isSubmitting()) {
@@ -63,10 +65,12 @@ export class UploadCandidateComponent {
     }
 
     const file = ensureXlsxFile(this.uploadForm.controls.file.value);
-
+    let excelData: CandidateExcelData;
+    let normalizedFile = file;
     try {
       const rows = await this.extractExcelRows(file);
-      ensureSingleDataRow(rows);
+      excelData = ensureSingleDataRow(rows);
+      normalizedFile = this.normalizeExcelFile(excelData, file);
     } catch (error) {
       this.presentError(error);
       return;
@@ -79,7 +83,7 @@ export class UploadCandidateComponent {
         this.candidateApi.uploadCandidate({
           name: this.uploadForm.controls.name.value,
           surname: this.uploadForm.controls.surname.value,
-          file
+          file: normalizedFile
         })
       );
       this.candidateStorage.addCandidate(candidate);
@@ -105,9 +109,8 @@ export class UploadCandidateComponent {
   }
 
   private async extractExcelRows(file: File): Promise<CandidateExcelData[]> {
-    const { read, utils } = await import('xlsx');
     const buffer = await file.arrayBuffer();
-    const workbook = read(buffer, { type: 'array' });
+    const workbook = XLSX.read(buffer, { type: 'array' });
     const [firstSheetName] = workbook.SheetNames;
 
     if (!firstSheetName) {
@@ -115,7 +118,7 @@ export class UploadCandidateComponent {
     }
 
     const sheet = workbook.Sheets[firstSheetName];
-    const rawRows = utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' });
+    const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' });
 
     return rawRows.map((row) => this.mapRowToCandidateData(row));
   }
@@ -137,7 +140,13 @@ export class UploadCandidateComponent {
       throw new ExcelValidationError('El campo "Seniority" debe ser "junior" o "senior".');
     }
 
-    const yearsRaw = normalizedRow['years'] ?? normalizedRow['añosdeexperiencia'] ?? normalizedRow['anosexperiencia'];
+    const yearsRaw =
+      normalizedRow['years'] ??
+      normalizedRow['anosdeexperiencia'] ??
+      normalizedRow['anosexperiencia'] ??
+      normalizedRow['experiencia'] ??
+      normalizedRow['yearsofexperience'];
+
     const years = Number(yearsRaw);
     if (!Number.isFinite(years) || years < 0) {
       throw new ExcelValidationError('El campo "Años de experiencia" debe ser un número válido.');
@@ -175,5 +184,28 @@ export class UploadCandidateComponent {
         ? error.message
         : 'No se pudo cargar el candidato. Intenta nuevamente.';
     this.snackBar.open(message, 'Cerrar', { duration: 4000 });
+  }
+
+  private normalizeExcelFile(excelData: CandidateExcelData, originalFile: File): File {
+    const worksheet = XLSX.utils.json_to_sheet(
+      [
+        {
+          seniority: excelData.seniority,
+          years: excelData.years,
+          availability: excelData.availability
+        }
+      ],
+      { header: ['seniority', 'years', 'availability'] }
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'candidate');
+    const normalizedBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' }) as ArrayBuffer;
+
+    return new File([normalizedBuffer], originalFile.name, {
+      type:
+        originalFile.type || 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      lastModified: originalFile.lastModified
+    });
   }
 }
