@@ -1,4 +1,6 @@
+import type { Express } from 'express';
 import {
+  BadRequestException,
   Body,
   Controller,
   ParseFilePipeBuilder,
@@ -32,15 +34,34 @@ export class CandidatesController {
         .addMaxSizeValidator({ maxSize: 2 * 1024 * 1024 })
         .build({ fileIsRequired: true }),
     )
-    file: Express.Multer.File,
+    file: unknown,
   ) {
     const name = String(formData.name);
     const surname = String(formData.surname);
+    const uploadedFile = this.ensureUploadedFile(file);
     const payload = {
       name,
       surname,
-      file,
+      file: uploadedFile,
     } satisfies CandidateUploadRequest;
     return this.candidatesService.processCandidateUpload(payload);
+  }
+
+  private ensureUploadedFile(file: unknown): Express.Multer.File {
+    if (!this.isMulterFile(file)) {
+      throw new BadRequestException('Uploaded file payload is invalid');
+    }
+    return file;
+  }
+
+  private isMulterFile(file: unknown): file is Express.Multer.File {
+    if (!file || typeof file !== 'object') {
+      return false;
+    }
+    const candidate = file as Record<string, unknown>;
+    return (
+      typeof candidate.fieldname === 'string' &&
+      typeof candidate.mimetype === 'string'
+    );
   }
 }

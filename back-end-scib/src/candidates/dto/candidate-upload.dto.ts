@@ -1,3 +1,4 @@
+import type { Express } from 'express';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CandidateUploadDto {
