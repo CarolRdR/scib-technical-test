@@ -36,6 +36,7 @@
     },
     "TITLE": "Candidate list",
     "EMPTY": "No candidates have been uploaded yet.",
+    "SEARCH": "Search candidate...",
     "LOADING": "Loading candidate information...",
     "COLUMNS": {
       "NAME": "First name",
@@ -50,6 +51,7 @@
     }
   },
   "DROP_FILES_ZONE": {
+    "ARIA_LABEL": "Upload Excel file",
     "TITLE": "Drag and drop the file here",
     "SUBTITLE": "or click to select it",
     "SELECTED": "Selected file: {{FILE}}",
@@ -70,3 +72,4 @@
     "SUBTITLE": "Please fill out your information below to add candidates to our talent pool."
   }
 }
+

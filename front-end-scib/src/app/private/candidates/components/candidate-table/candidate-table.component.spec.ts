@@ -42,8 +42,8 @@ describe('CandidateTableComponent', () => {
   });
 
   it('should show empty state when there are no candidates', () => {
-    const emptyState = fixture.nativeElement.querySelector('.empty-state');
-    expect(emptyState.textContent).toContain('cargado candidatos');
+    const text = fixture.nativeElement.querySelector('.empty-state p')?.textContent?.trim();
+    expect(text).toBe('CANDIDATE_TABLE.EMPTY');
   });
 
   it('should expose candidate data when available', () => {
@@ -62,5 +62,19 @@ describe('CandidateTableComponent', () => {
 
     const spinner = fixture.nativeElement.querySelector('mat-progress-spinner');
     expect(spinner).not.toBeNull();
+  });
+
+  it('should filter candidates by search term', () => {
+    storageStub.setCandidates([
+      { name: 'Jane', surname: 'Doe', seniority: 'senior', years: 6, availability: true },
+      { name: 'John', surname: 'Smith', seniority: 'junior', years: 3, availability: false }
+    ]);
+
+    component.applyFilter('jane');
+    expect(component['filteredCandidates']?.length).toBe(1);
+    expect(component['filteredCandidates']?.[0].name).toBe('Jane');
+
+    component.clearSearch();
+    expect(component['filteredCandidates']).toBeNull();
   });
 });

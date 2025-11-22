@@ -36,6 +36,7 @@
     },
     "TITLE": "Listado de candidatos",
     "EMPTY": "Aún no se han cargado candidatos.",
+    "SEARCH": "Buscar candidato...",
     "LOADING": "Estamos cargando la información...",
     "COLUMNS": {
       "NAME": "Nombre",
@@ -50,6 +51,7 @@
     }
   },
   "DROP_FILES_ZONE": {
+    "ARIA_LABEL": "Subir archivo Excel",
     "TITLE": "Arrastra y suelta el archivo aquí",
     "SUBTITLE": "o haz clic para seleccionarlo",
     "SELECTED": "Archivo seleccionado: {{FILE}}",

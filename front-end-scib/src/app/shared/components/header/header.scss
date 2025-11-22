@@ -12,6 +12,7 @@
       color: var(--foreground, #1f1f1f);
       margin:0;
       line-height: 1;
+      color: color-mix(in srgb, var(--foreground, #343C43) 100%, transparent);
     }
 
     &__subtitle {

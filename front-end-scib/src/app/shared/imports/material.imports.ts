@@ -17,5 +17,5 @@ export const MATERIAL_IMPORTS = [
   MatProgressSpinnerModule,
   MatToolbarModule,
   MatCardModule,
-  MatGridListModule
+  MatGridListModule,
 ];

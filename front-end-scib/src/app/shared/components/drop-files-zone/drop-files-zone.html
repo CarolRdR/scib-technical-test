@@ -5,6 +5,9 @@
   (dragover)="onDragOver($event)"
   (dragleave)="onDragLeave($event)"
   (drop)="onDrop($event)"
+  role="button"
+  tabindex="0"
+  [attr.aria-label]="'DROP_FILES_ZONE.ARIA_LABEL' | translate"
 >
   <input #fileInput type="file" class="upload-input" (change)="onFileSelected($event)" accept=".xlsx" />
 
@@ -17,13 +20,13 @@
     </p>
 
     @if (hasSelectedFile) {
-      <p class="file-name">
+      <p class="file-name" aria-live="polite">
         {{ 'DROP_FILES_ZONE.SELECTED' | translate:{ FILE: selectedFileName } }}
       </p>
     }
 
     @if (showRequiredError) {
-      <p class="dropzone-error">{{ 'DROP_FILES_ZONE.ERROR_REQUIRED' | translate }}</p>
+      <p class="dropzone-error" role="alert" aria-live="assertive">{{ 'DROP_FILES_ZONE.ERROR_REQUIRED' | translate }}</p>
     }
   </div>
 </div>

@@ -25,11 +25,11 @@ html {
     typography: Roboto,
     density: 0,
   ));
-  body {
-  @include mat.theme((
-    color: mat.$cyan-palette,
-   ));
-  }
+  // body {
+  // @include mat.theme((
+  //   color: mat.$cyan-palette,
+  //  ));
+  // }
 }
 
 body {
@@ -38,7 +38,8 @@ body {
   // Set a default background, font and text colors for the application using
   // Angular Material's system-level CSS variables. Learn more about these
   // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-secondary-container);
+  // background-color: var(--mat-sys-secondary-container);
+  background-color: var(--background-body);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
 
@@ -54,11 +55,6 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.card {
-  background-color: var(--mat-sys-secondary-container);
-  color: var(--mat-sys-on-surface);
-}
-
 .snackbar-success {
   background-color: #1b5e20;
   color: #fff;
@@ -67,4 +63,9 @@ body {
 .snackbar-error {
   background-color: #b71c1c;
   color: #fff;
+}
+
+:root {
+  --background-body: #EEF3F9;
+  --background-card: #FFFFFF;
 }

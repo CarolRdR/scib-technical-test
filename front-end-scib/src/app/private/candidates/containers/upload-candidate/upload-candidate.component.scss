@@ -1,3 +1,7 @@
+:root {
+  --mdc-elevated-card-container-color: #697482;
+}
+
 .header-layout {
   padding: 2rem;
 }
@@ -28,6 +32,7 @@
     font-size: 2rem;
     font-weight: 700;
     line-height: 1;
+    color: color-mix(in srgb, var(--foreground, #343C43) 100%, transparent);
   }
   &__subtitle {
     font-size: 1rem;
@@ -38,12 +43,16 @@
 .upload-card {
   height: fit-content;
   padding: 1.5rem;
+  background-color: var(--background-card);
 }
 
 .upload-form {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  &__title {
+    color: color-mix(in srgb, var(--foreground, #343C43) 100%, transparent);
+  }
 }
 
 @media (max-width: 960px) {
