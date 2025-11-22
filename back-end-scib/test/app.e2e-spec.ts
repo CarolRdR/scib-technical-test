@@ -4,16 +4,43 @@ import request from 'supertest';
 import * as XLSX from 'xlsx';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { CandidateDto } from '../src/candidates/dto/candidate.dto';
+import { FileCandidatesRepository } from '../src/candidates/storage/file-candidates.repository';
+
+class InMemoryCandidatesRepository extends FileCandidatesRepository {
+  private storage: CandidateDto[] = [];
+
+  async findAll(): Promise<CandidateDto[]> {
+    return this.storage;
+  }
+
+  async save(candidate: CandidateDto): Promise<CandidateDto> {
+    this.storage.push(candidate);
+    return candidate;
+  }
+
+  clear() {
+    this.storage = [];
+  }
+}
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
+  let repository: InMemoryCandidatesRepository;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(FileCandidatesRepository)
+      .useClass(InMemoryCandidatesRepository)
+      .compile();
 
     app = moduleFixture.createNestApplication();
+    repository = moduleFixture.get(
+      FileCandidatesRepository,
+    ) as InMemoryCandidatesRepository;
+    repository.clear();
     await app.init();
   });
 
@@ -72,6 +99,44 @@ describe('AppController (e2e)', () => {
         years: 7,
         availability: true,
       });
+    });
+  });
+
+  describe('GET /candidates', () => {
+    const sendBaseRequest = () =>
+      request(app.getHttpServer())
+        .post('/candidates/upload')
+        .field('name', 'John')
+        .field('surname', 'Doe');
+
+    it('should return candidates persisted from previous uploads', async () => {
+      const excelBuffer = createExcelBuffer({
+        seniority: 'junior',
+        years: 4,
+        availability: true,
+      });
+
+      await sendBaseRequest()
+        .attach('file', excelBuffer, {
+          filename: 'candidate.xlsx',
+          contentType:
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        })
+        .expect(201);
+
+      const response = await request(app.getHttpServer())
+        .get('/candidates')
+        .expect(200);
+
+      expect(response.body).toEqual([
+        {
+          name: 'John',
+          surname: 'Doe',
+          seniority: 'junior',
+          years: 4,
+          availability: true,
+        },
+      ]);
     });
   });
 });

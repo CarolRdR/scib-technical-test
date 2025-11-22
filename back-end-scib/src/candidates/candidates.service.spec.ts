@@ -4,7 +4,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Readable } from 'stream';
 import * as XLSX from 'xlsx';
 import { CandidatesService } from './candidates.service';
+import { CandidateDto } from './dto/candidate.dto';
 import { CandidateUploadRequest } from './dto/candidate-upload.dto';
+import { FileCandidatesRepository } from './storage/file-candidates.repository';
 
 type CandidateRow = Record<string, unknown>;
 
@@ -16,16 +18,26 @@ const DEFAULT_ROW: CandidateRow = {
 
 describe('CandidatesService', () => {
   let service: CandidatesService;
+  let repository: jest.Mocked<FileCandidatesRepository>;
 
   beforeEach(async () => {
+    repository = {
+      save: jest.fn(),
+      findAll: jest.fn(),
+    } as jest.Mocked<FileCandidatesRepository>;
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CandidatesService],
+      providers: [
+        CandidatesService,
+        { provide: FileCandidatesRepository, useValue: repository },
+      ],
     }).compile();
 
     service = module.get<CandidatesService>(CandidatesService);
   });
 
   afterEach(() => {
+    jest.clearAllMocks();
     jest.restoreAllMocks();
   });
 
@@ -38,13 +50,20 @@ describe('CandidatesService', () => {
       },
     ]);
 
-    await expect(service.processCandidateUpload(payload)).resolves.toEqual({
+    const expected: CandidateDto = {
       name: payload.name,
       surname: payload.surname,
       seniority: 'junior',
       years: 6,
       availability: true,
-    });
+    };
+
+    repository.save.mockResolvedValue(expected);
+
+    await expect(service.processCandidateUpload(payload)).resolves.toEqual(
+      expected,
+    );
+    expect(repository.save).toHaveBeenCalledWith(expected);
   });
 
   it('should throw when required columns are missing', async () => {
@@ -58,6 +77,22 @@ describe('CandidatesService', () => {
     await expect(service.processCandidateUpload(payload)).rejects.toThrow(
       BadRequestException,
     );
+  });
+
+  it('should list candidates via repository', async () => {
+    const candidates: CandidateDto[] = [
+      {
+        name: 'John',
+        surname: 'Doe',
+        seniority: 'junior',
+        years: 3,
+        availability: true,
+      },
+    ];
+    repository.findAll.mockResolvedValue(candidates);
+
+    await expect(service.listCandidates()).resolves.toEqual(candidates);
+    expect(repository.findAll).toHaveBeenCalledTimes(1);
   });
 
   it('should throw when availability is invalid', async () => {

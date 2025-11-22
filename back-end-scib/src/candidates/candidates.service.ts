@@ -2,21 +2,39 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import * as XLSX from 'xlsx';
 import { candidateErrors } from '../common/errors/candidate-errors';
+import { CandidateDto } from './dto/candidate.dto';
 import { CandidateUploadRequest } from './dto/candidate-upload.dto';
+import { FileCandidatesRepository } from './storage/file-candidates.repository';
 
 type ExcelRow = Record<string, unknown>;
+type CandidateExcelData = Pick<
+  CandidateDto,
+  'seniority' | 'years' | 'availability'
+>;
 
 @Injectable()
 export class CandidatesService {
-  async processCandidateUpload(payload: CandidateUploadRequest) {
+  constructor(
+    private readonly candidatesRepository: FileCandidatesRepository,
+  ) {}
+
+  async processCandidateUpload(
+    payload: CandidateUploadRequest,
+  ): Promise<CandidateDto> {
     const buffer = await this.readUploadedFile(payload.file);
     const excelData = this.parseExcel(buffer);
 
-    return {
+    const candidate: CandidateDto = {
       name: payload.name,
       surname: payload.surname,
       ...excelData,
     };
+
+    return this.candidatesRepository.save(candidate);
+  }
+
+  async listCandidates(): Promise<CandidateDto[]> {
+    return this.candidatesRepository.findAll();
   }
 
   private async readUploadedFile(file: Express.Multer.File): Promise<Buffer> {
@@ -31,7 +49,7 @@ export class CandidatesService {
     throw candidateErrors.fileHasNoData();
   }
 
-  private parseExcel(buffer: Buffer) {
+  private parseExcel(buffer: Buffer): CandidateExcelData {
     try {
       const workbook = XLSX.read(buffer, { type: 'buffer' });
       const [firstSheetName] = workbook.SheetNames;
@@ -88,8 +106,8 @@ export class CandidatesService {
       typeof value === 'number'
         ? value
         : typeof value === 'string'
-        ? Number(value)
-        : NaN;
+          ? Number(value)
+          : NaN;
 
     if (!Number.isInteger(parsed) || parsed < 0) {
       throw candidateErrors.yearsInvalidValue();

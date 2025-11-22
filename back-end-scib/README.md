@@ -28,7 +28,7 @@ package.json
 tsconfig.json
 ```
 
-## Endpoint principal
+## Endpoints principales
 
 ### `POST /candidates/upload`
 
@@ -51,6 +51,23 @@ Ejemplo de respuesta:
 ```
 
 Este JSON sera almacenado por el frontend para construir el listado de candidatos.
+
+### `GET /candidates`
+
+Devuelve el array completo de candidatos ya procesados y persistidos por el backend. El frontend puede consumir este endpoint para reconstruir la tabla tras un refresh o reinicio del servidor.
+
+## Persistencia en disco
+
+Cada candidato aceptado se guarda en `data/candidates.json`. Este archivo se crea automaticamente si no existe y contiene un array JSON con todos los registros acumulados.
+
+### Limpiar la informacion
+
+Para reiniciar el almacenamiento basta con dejar el fichero vacio (`[]`). Dos maneras rapidas:
+
+1. Eliminar `data/candidates.json`; en el siguiente inicio del backend se volvera a crear vacio.
+2. Sobrescribir el contenido con `[]` (por ejemplo, usando tu editor o redireccionando `echo [] > data/candidates.json`).
+
+Ambas opciones borran definitivamente los registros, asi que solo ejecútalas cuando quieras reiniciar las pruebas.
 
 ## Instalacion y ejecucion
 

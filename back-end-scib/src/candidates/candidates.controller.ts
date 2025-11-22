@@ -2,6 +2,7 @@ import type { Express } from 'express';
 import {
   Body,
   Controller,
+  Get,
   ParseFilePipeBuilder,
   Post,
   UploadedFile,
@@ -19,6 +20,11 @@ import {
 @Controller('candidates')
 export class CandidatesController {
   constructor(private readonly candidatesService: CandidatesService) {}
+
+  @Get()
+  async listCandidates() {
+    return this.candidatesService.listCandidates();
+  }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
