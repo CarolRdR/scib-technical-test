@@ -1,0 +1,27 @@
+<div
+  class="upload-dropzone"
+  [class.upload-dropzone--hover]="isHovering"
+  (click)="onClickDropzone()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  <input #fileInput type="file" class="upload-input" (change)="onFileSelected($event)" accept=".xlsx" />
+
+  <div class="upload-dropzone-content">
+    <mat-icon>cloud_upload</mat-icon>
+
+    <p>
+      Arrastra y suelta el archivo aquí<br />
+      <span>o haz clic para seleccionarlo</span>
+    </p>
+
+    @if (hasSelectedFile) {
+      <p class="file-name">Archivo seleccionado: {{ selectedFileName }}</p>
+    }
+
+    @if (showRequiredError) {
+      <p class="dropzone-error">Adjunta un archivo.</p>
+    }
+  </div>
+</div>

@@ -1,25 +1,19 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  ElementRef,
-  inject,
-  signal,
-  ViewChild
-} from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
 import * as XLSX from 'xlsx';
-import { CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
 import { ERROR_MESSAGES } from '../../../../core/constants/error-messages';
+import { CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
 import {
   ensureSingleDataRow,
   ensureXlsxFile,
   ExcelValidationError
 } from '../../../../core/utils/validators/excel-file.validator';
+import { DropFilesZoneComponent } from '../../../../shared/components/drop-files-zone/drop-files-zone';
 import { MATERIAL_IMPORTS } from '../../../../shared/imports/material.imports';
 import { CandidateTableComponent } from '../../components/candidate-table/candidate-table.component';
 import { CandidateApiService } from '../../services/candidate-api.service';
@@ -34,7 +28,8 @@ import { CandidateStorageService } from '../../services/candidate-storage.servic
     MatProgressBarModule,
     MatSnackBarModule,
     ...MATERIAL_IMPORTS,
-    CandidateTableComponent
+    CandidateTableComponent,
+    DropFilesZoneComponent
   ],
   templateUrl: './upload-candidate.component.html',
   styleUrl: './upload-candidate.component.scss',
@@ -46,9 +41,6 @@ export class UploadCandidateComponent {
   private readonly candidateApi = inject(CandidateApiService);
   private readonly candidateStorage = inject(CandidateStorageService);
 
-  @ViewChild('fileInput', { static: false })
-  private readonly fileInput?: ElementRef<HTMLInputElement>;
-
   protected readonly uploadForm = this.fb.nonNullable.group({
     name: this.fb.nonNullable.control('', { validators: [Validators.required, Validators.maxLength(80)] }),
     surname: this.fb.nonNullable.control('', {
@@ -58,8 +50,6 @@ export class UploadCandidateComponent {
   });
 
   protected readonly isSubmitting = signal(false);
-  protected readonly selectedFileName = computed(() => this.uploadForm.controls.file.value?.name ?? '');
-  protected readonly hasSelectedFile = computed(() => Boolean(this.uploadForm.controls.file.value));
 
   protected async onSubmit(): Promise<void> {
     if (this.uploadForm.invalid || this.isSubmitting()) {
@@ -92,25 +82,16 @@ export class UploadCandidateComponent {
       );
       this.candidateStorage.addCandidate(candidate);
       this.uploadForm.reset({ name: '', surname: '', file: null });
-      const nativeInput = this.fileInput?.nativeElement;
-      if (nativeInput) {
-        nativeInput.value = '';
-      }
-      this.snackBar.open('Candidato cargado correctamente.', 'Cerrar', { duration: 3000 });
+      this.snackBar.open('Candidato cargado correctamente.', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['snackbar-success']
+      });
     } catch (error) {
       this.presentError(error);
     } finally {
       this.isSubmitting.set(false);
       this.candidateStorage.setLoading(false);
     }
-  }
-
-  protected onFileChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.item(0) ?? null;
-    this.uploadForm.controls.file.setValue(file);
-    this.uploadForm.controls.file.markAsDirty();
-    this.uploadForm.controls.file.updateValueAndValidity();
   }
 
   private async extractExcelRows(file: File): Promise<CandidateExcelData[]> {
@@ -183,11 +164,14 @@ export class UploadCandidateComponent {
   }
 
   private presentError(error: unknown): void {
+    if (error instanceof HttpErrorResponse) {
+      // Global interceptor handles HTTP errors.
+      return;
+    }
+
     const message =
-      error instanceof ExcelValidationError
-        ? error.message
-        : ERROR_MESSAGES.upload.default;
-    this.snackBar.open(message, 'Cerrar', { duration: 4000 });
+      error instanceof ExcelValidationError ? error.message : ERROR_MESSAGES.general.unknown;
+    this.snackBar.open(message, 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
   }
 
   private normalizeExcelFile(excelData: CandidateExcelData, originalFile: File): File {
