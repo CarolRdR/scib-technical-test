@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -37,7 +37,7 @@ import { CandidateStorageService } from '../../services/storage/candidate-storag
   styleUrl: './upload-candidate.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UploadCandidateComponent {
+export class UploadCandidateComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly snackBar = inject(MatSnackBar);
   private readonly candidateApi = inject(CandidateApiService);
@@ -53,6 +53,10 @@ export class UploadCandidateComponent {
   });
 
   public readonly isSubmitting = signal(false);
+
+  ngOnInit(): void {
+    void this.loadExistingCandidates();
+  }
 
   public async onSubmit(): Promise<void> {
     if (this.uploadForm.invalid || this.isSubmitting()) {
@@ -95,6 +99,18 @@ export class UploadCandidateComponent {
       this.presentError(error);
     } finally {
       this.isSubmitting.set(false);
+      this.candidateStorage.setLoading(false);
+    }
+  }
+
+  private async loadExistingCandidates(): Promise<void> {
+    this.candidateStorage.setLoading(true);
+    try {
+      const candidates = await firstValueFrom(this.candidateApi.listCandidates());
+      this.candidateStorage.setCandidates(candidates);
+    } catch (error) {
+      this.presentError(error);
+    } finally {
       this.candidateStorage.setLoading(false);
     }
   }

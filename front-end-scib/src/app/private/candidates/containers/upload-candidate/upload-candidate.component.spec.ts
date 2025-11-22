@@ -12,6 +12,7 @@ class CandidateStorageMock {
   readonly isLoading = jasmine.createSpy('isLoading').and.returnValue(false);
   setLoading = jasmine.createSpy('setLoading');
   addCandidate = jasmine.createSpy('addCandidate');
+  setCandidates = jasmine.createSpy('setCandidates');
 }
 
 describe('UploadCandidateComponent', () => {
@@ -21,8 +22,9 @@ describe('UploadCandidateComponent', () => {
   let storageMock: CandidateStorageMock;
 
   beforeEach(async () => {
-    apiServiceSpy = jasmine.createSpyObj('CandidateApiService', ['uploadCandidate']);
+    apiServiceSpy = jasmine.createSpyObj('CandidateApiService', ['uploadCandidate', 'listCandidates']);
     storageMock = new CandidateStorageMock();
+    apiServiceSpy.listCandidates.and.returnValue(of([]));
 
     await TestBed.configureTestingModule({
       imports: [UploadCandidateComponent, TranslateModule.forRoot()],

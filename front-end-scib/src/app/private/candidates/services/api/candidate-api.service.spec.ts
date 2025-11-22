@@ -53,4 +53,18 @@ describe('CandidateApiService', () => {
 
     req.flush(mockResponse);
   });
+
+  it('should request candidate list', () => {
+    const mockResponse: Candidate[] = [
+      { name: 'Jane', surname: 'Doe', seniority: 'senior', years: 5, availability: true }
+    ];
+
+    service.listCandidates().subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiBase}/candidates`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
+  });
 });

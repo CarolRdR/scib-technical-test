@@ -11,6 +11,11 @@ export class CandidateStorageService {
   readonly candidates = computed(() => this.candidatesSignal());
   readonly isLoading = computed(() => this.loadingSignal());
 
+  setCandidates(candidates: Candidate[]): void {
+    this.candidatesSignal.set(candidates);
+    this.loadingSignal.set(false);
+  }
+
   setLoading(isLoading: boolean): void {
     this.loadingSignal.set(isLoading);
   }

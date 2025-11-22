@@ -18,6 +18,10 @@ export class CandidateApiService {
 
   constructor(private readonly http: HttpClient) {}
 
+  listCandidates(): Observable<Candidate[]> {
+    return this.http.get<Candidate[]>(this.baseUrl);
+  }
+
   uploadCandidate(payload: UploadCandidatePayload): Observable<Candidate> {
     const formData = new FormData();
     formData.append('name', payload.name);

@@ -27,6 +27,14 @@ describe('CandidateStorageService', () => {
     expect(service.isLoading()).toBeFalse();
   });
 
+  it('should replace candidates list via setCandidates', () => {
+    service.setLoading(true);
+    service.setCandidates([mockCandidate]);
+
+    expect(service.candidates()).toEqual([mockCandidate]);
+    expect(service.isLoading()).toBeFalse();
+  });
+
   it('should reset collection and loading state', () => {
     service.addCandidate(mockCandidate);
     service.setLoading(true);
