@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { Candidate } from '../../../core/interfaces/candidate.interface';
+import { Candidate } from '../../../../core/interfaces/candidate.interface';
 
 @Injectable({
   providedIn: 'root'

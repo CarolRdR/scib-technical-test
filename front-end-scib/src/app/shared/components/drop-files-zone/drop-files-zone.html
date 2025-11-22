@@ -12,16 +12,18 @@
     <mat-icon>cloud_upload</mat-icon>
 
     <p>
-      Arrastra y suelta el archivo aquí<br />
-      <span>o haz clic para seleccionarlo</span>
+      {{ 'DROP_FILES_ZONE.TITLE' | translate }}<br />
+      <span>{{ 'DROP_FILES_ZONE.SUBTITLE' | translate }}</span>
     </p>
 
     @if (hasSelectedFile) {
-      <p class="file-name">Archivo seleccionado: {{ selectedFileName }}</p>
+      <p class="file-name">
+        {{ 'DROP_FILES_ZONE.SELECTED' | translate:{ FILE: selectedFileName } }}
+      </p>
     }
 
     @if (showRequiredError) {
-      <p class="dropzone-error">Adjunta un archivo.</p>
+      <p class="dropzone-error">{{ 'DROP_FILES_ZONE.ERROR_REQUIRED' | translate }}</p>
     }
   </div>
 </div>

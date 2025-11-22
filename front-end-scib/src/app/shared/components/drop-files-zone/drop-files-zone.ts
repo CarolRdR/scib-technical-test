@@ -10,13 +10,15 @@ import {
   ViewChild
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
+import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { MATERIAL_IMPORTS } from '../../imports/material.imports';
 
 @Component({
   selector: 'app-drop-files-zone',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ...MATERIAL_IMPORTS],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ...MATERIAL_IMPORTS],
   templateUrl: './drop-files-zone.html',
   styleUrl: './drop-files-zone.scss',
   changeDetection: ChangeDetectionStrategy.Default

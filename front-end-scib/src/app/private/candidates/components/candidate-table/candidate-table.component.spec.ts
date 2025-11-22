@@ -1,8 +1,8 @@
+import { ANIMATION_MODULE_TYPE, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { signal } from '@angular/core';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
 import { Candidate } from '../../../../core/interfaces/candidate.interface';
-import { CandidateStorageService } from '../../services/candidate-storage.service';
+import { CandidateStorageService } from '../../services/storage/candidate-storage.service';
 import { CandidateTableComponent } from './candidate-table.component';
 
 class CandidateStorageStub {
@@ -30,8 +30,10 @@ describe('CandidateTableComponent', () => {
     storageStub = new CandidateStorageStub();
 
     await TestBed.configureTestingModule({
-      imports: [CandidateTableComponent],
-      providers: [provideNoopAnimations(), { provide: CandidateStorageService, useValue: storageStub }]
+      imports: [CandidateTableComponent, TranslateModule.forRoot()],
+      providers: [
+        { provide: ANIMATION_MODULE_TYPE, useValue: 'NoopAnimations' },
+        { provide: CandidateStorageService, useValue: storageStub }]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CandidateTableComponent);

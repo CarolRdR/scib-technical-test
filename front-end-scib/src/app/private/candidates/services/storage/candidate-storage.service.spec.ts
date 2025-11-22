@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { Candidate } from '../../../core/interfaces/candidate.interface';
+import { Candidate } from '../../../../core/interfaces/candidate.interface';
 import { CandidateStorageService } from './candidate-storage.service';
+
 
 describe('CandidateStorageService', () => {
   let service: CandidateStorageService;

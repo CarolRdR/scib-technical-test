@@ -4,9 +4,10 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import * as XLSX from 'xlsx';
-import { ERROR_MESSAGES } from '../../../../core/constants/error-messages';
+import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/error-messages';
 import { CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
 import {
   ensureSingleDataRow,
@@ -16,8 +17,8 @@ import {
 import { DropFilesZoneComponent } from '../../../../shared/components/drop-files-zone/drop-files-zone';
 import { MATERIAL_IMPORTS } from '../../../../shared/imports/material.imports';
 import { CandidateTableComponent } from '../../components/candidate-table/candidate-table.component';
-import { CandidateApiService } from '../../services/candidate-api.service';
-import { CandidateStorageService } from '../../services/candidate-storage.service';
+import { CandidateApiService } from '../../services/api/candidate-api.service';
+import { CandidateStorageService } from '../../services/storage/candidate-storage.service';
 
 @Component({
   selector: 'app-upload-candidate',
@@ -29,7 +30,8 @@ import { CandidateStorageService } from '../../services/candidate-storage.servic
     MatSnackBarModule,
     ...MATERIAL_IMPORTS,
     CandidateTableComponent,
-    DropFilesZoneComponent
+    DropFilesZoneComponent,
+    TranslateModule
   ],
   templateUrl: './upload-candidate.component.html',
   styleUrl: './upload-candidate.component.scss',
@@ -40,8 +42,9 @@ export class UploadCandidateComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly candidateApi = inject(CandidateApiService);
   private readonly candidateStorage = inject(CandidateStorageService);
+  private readonly translate = inject(TranslateService);
 
-  protected readonly uploadForm = this.fb.nonNullable.group({
+  public readonly uploadForm = this.fb.nonNullable.group({
     name: this.fb.nonNullable.control('', { validators: [Validators.required, Validators.maxLength(80)] }),
     surname: this.fb.nonNullable.control('', {
       validators: [Validators.required, Validators.maxLength(80)]
@@ -49,9 +52,9 @@ export class UploadCandidateComponent {
     file: this.fb.control<File | null>(null, { validators: [Validators.required] })
   });
 
-  protected readonly isSubmitting = signal(false);
+  public readonly isSubmitting = signal(false);
 
-  protected async onSubmit(): Promise<void> {
+  public async onSubmit(): Promise<void> {
     if (this.uploadForm.invalid || this.isSubmitting()) {
       this.uploadForm.markAllAsTouched();
       return;
@@ -82,7 +85,9 @@ export class UploadCandidateComponent {
       );
       this.candidateStorage.addCandidate(candidate);
       this.uploadForm.reset({ name: '', surname: '', file: null });
-      this.snackBar.open('Candidato cargado correctamente.', 'Cerrar', {
+      const successMessage = this.translate.instant('UPLOAD_CANDIDATE.SNACKBAR_SUCCESS');
+      const closeLabel = this.translate.instant('COMMON.CLOSE');
+      this.snackBar.open(successMessage, closeLabel, {
         duration: 3000,
         panelClass: ['snackbar-success']
       });
@@ -169,9 +174,11 @@ export class UploadCandidateComponent {
       return;
     }
 
-    const message =
-      error instanceof ExcelValidationError ? error.message : ERROR_MESSAGES.general.unknown;
-    this.snackBar.open(message, 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
+    const key =
+      error instanceof ExcelValidationError ? error.translationKey : ERROR_MESSAGE_KEYS.general.unknown;
+    const message = this.translate.instant(key);
+    const closeLabel = this.translate.instant('COMMON.CLOSE');
+    this.snackBar.open(message, closeLabel, { duration: 4000, panelClass: ['snackbar-error'] });
   }
 
   private normalizeExcelFile(excelData: CandidateExcelData, originalFile: File): File {

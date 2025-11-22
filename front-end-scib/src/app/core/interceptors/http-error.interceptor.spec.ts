@@ -1,6 +1,7 @@
 import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule } from '@ngx-translate/core';
 import { throwError } from 'rxjs';
 import { httpErrorInterceptor } from './http-error.interceptor';
 
@@ -9,7 +10,7 @@ describe('httpErrorInterceptor', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatSnackBarModule]
+      imports: [MatSnackBarModule, TranslateModule.forRoot()]
     });
     snackBar = TestBed.inject(MatSnackBar);
   });

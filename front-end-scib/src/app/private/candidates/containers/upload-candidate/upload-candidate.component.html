@@ -1,29 +1,35 @@
 <div class="candidates-layout">
   <mat-card class="upload-card">
     <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
-      <h2>Candidate Information</h2>
+      <h2>{{ 'UPLOAD_CANDIDATE.TITLE' | translate }}</h2>
 
       <mat-form-field appearance="outline">
-        <mat-label>Nombre</mat-label>
-        <input matInput formControlName="name" placeholder="Ej: Ana" />
+        <mat-label>{{ 'UPLOAD_CANDIDATE.FIELDS.NAME_LABEL' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          [placeholder]="'UPLOAD_CANDIDATE.FIELDS.NAME_PLACEHOLDER' | translate"
+        />
         @if (uploadForm.controls.name.hasError('required')) {
-          <mat-error>Campo obligatorio</mat-error>
+          <mat-error>{{ 'UPLOAD_CANDIDATE.FIELDS.NAME_REQUIRED' | translate }}</mat-error>
         }
         @if (uploadForm.controls.name.hasError('maxlength')) {
-          <mat-error>
-            Máximo 80 caracteres
-          </mat-error>
+          <mat-error>{{ 'UPLOAD_CANDIDATE.FIELDS.NAME_MAX' | translate }}</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Apellido</mat-label>
-        <input matInput formControlName="surname" placeholder="Ej: García" />
+        <mat-label>{{ 'UPLOAD_CANDIDATE.FIELDS.SURNAME_LABEL' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="surname"
+          [placeholder]="'UPLOAD_CANDIDATE.FIELDS.SURNAME_PLACEHOLDER' | translate"
+        />
         @if (uploadForm.controls.surname.hasError('required')) {
-          <mat-error>Campo obligatorio</mat-error>
+          <mat-error>{{ 'UPLOAD_CANDIDATE.FIELDS.SURNAME_REQUIRED' | translate }}</mat-error>
         }
         @if (uploadForm.controls.surname.hasError('maxlength')) {
-          <mat-error>Máximo 80 caracteres</mat-error>
+          <mat-error>{{ 'UPLOAD_CANDIDATE.FIELDS.SURNAME_MAX' | translate }}</mat-error>
         }
       </mat-form-field>
 
@@ -31,7 +37,11 @@
       <app-drop-files-zone [control]="uploadForm.controls.file" />
 
       <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting()">
-        {{ isSubmitting() ? 'Cargando...' : 'Enviar' }}
+        {{
+          isSubmitting()
+            ? ('UPLOAD_CANDIDATE.ACTIONS.LOADING' | translate)
+            : ('UPLOAD_CANDIDATE.ACTIONS.SUBMIT' | translate)
+        }}
       </button>
 
       @if (isSubmitting()) {

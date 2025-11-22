@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { DropFilesZoneComponent } from './drop-files-zone';
 
 describe('DropFilesZoneComponent', () => {
@@ -8,7 +9,7 @@ describe('DropFilesZoneComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DropFilesZoneComponent]
+      imports: [DropFilesZoneComponent, TranslateModule.forRoot()]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DropFilesZoneComponent);

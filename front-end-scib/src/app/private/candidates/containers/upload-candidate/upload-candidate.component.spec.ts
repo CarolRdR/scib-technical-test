@@ -1,9 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ANIMATION_MODULE_TYPE } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { Candidate, CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
-import { CandidateApiService } from '../../services/candidate-api.service';
-import { CandidateStorageService } from '../../services/candidate-storage.service';
+import { CandidateApiService } from '../../services/api/candidate-api.service';
+import { CandidateStorageService } from '../../services/storage/candidate-storage.service';
 import { UploadCandidateComponent } from './upload-candidate.component';
 
 class CandidateStorageMock {
@@ -24,9 +25,9 @@ describe('UploadCandidateComponent', () => {
     storageMock = new CandidateStorageMock();
 
     await TestBed.configureTestingModule({
-      imports: [UploadCandidateComponent],
+      imports: [UploadCandidateComponent, TranslateModule.forRoot()],
       providers: [
-        provideNoopAnimations(),
+        { provide: ANIMATION_MODULE_TYPE, useValue: 'NoopAnimations' },
         { provide: CandidateApiService, useValue: apiServiceSpy },
         { provide: CandidateStorageService, useValue: storageMock }
       ]

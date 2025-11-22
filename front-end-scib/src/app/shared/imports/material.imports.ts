@@ -6,8 +6,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-// import { MatProgressBarModule } from '@angular/material/progress-bar';
-// import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 export const MATERIAL_IMPORTS = [
   MatButtonModule,

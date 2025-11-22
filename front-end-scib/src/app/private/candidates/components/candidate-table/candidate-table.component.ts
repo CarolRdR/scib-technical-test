@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CandidateStorageService } from '../../services/candidate-storage.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { MATERIAL_IMPORTS } from '../../../../shared/imports/material.imports';
+import { CandidateStorageService } from '../../services/storage/candidate-storage.service';
 
 @Component({
   selector: 'app-candidate-table',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule, MatProgressSpinnerModule],
+  imports: [CommonModule, ...MATERIAL_IMPORTS, TranslateModule],
   templateUrl: './candidate-table.component.html',
   styleUrl: './candidate-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

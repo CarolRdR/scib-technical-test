@@ -1,59 +1,73 @@
-# FrontEndScib
+# SCIB Candidates Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.0.
+Aplicación Angular (v20) que permite cargar candidatos mediante un formulario reactivo, subir un archivo Excel con su información y visualizar los candidatos procesados por el backend de NestJS.
 
-## Development server
+## Requisitos funcionales
 
-To start a local development server, run:
+- Formulario con nombre, apellido y un archivo Excel (`.xlsx`) que contenga una única fila con:
+  - `seniority`: `junior` | `senior`
+  - `years`: número entero positivo
+  - `availability`: boolean (`true/false`, `yes/no`, `1/0`, etc.)
+- El Excel se valida en cliente antes de enviarse y se normaliza para garantizar el formato esperado por el backend.
+- Los candidatos devueltos se almacenan en memoria y se muestran en una tabla de Angular Material.
+- Manejo de errores global (via interceptor) y feedback visual en la interfaz (snackbars, estados de carga, dropzone accesible).
 
-```bash
-ng serve
+## Stack
+
+- Angular 20 standalone + Angular Material
+- Reactive Forms + Signals
+- Custom dropzone para archivos `.xlsx`
+- Servicios dedicados (`CandidateApiService`, `CandidateStorageService`) y helper de validación
+- Tests con Karma/Jasmine (`ng test`)
+
+## Scripts clave
+
+| Comando              | Descripción                                               |
+| -------------------- | --------------------------------------------------------- |
+| `npm install`        | Instala dependencias                                      |
+| `npm start`          | Levanta el servidor de desarrollo (http://localhost:4200) |
+| `npm run start:prod` | Levanta la app con configuración de producción            |
+| `npm run build`      | Compila la app para producción en `dist/`                 |
+| `npm test`           | Ejecuta los unit tests con Karma                          |
+
+## Flujo de trabajo recomendado
+
+1. **Levantar backend** en `http://localhost:3000` (NestJS).
+2. **Iniciar frontend** con `npm start`.
+3. Completar el formulario, arrastrar o seleccionar un Excel válido y enviar.
+4. Verificar que el candidato aparece en la tabla junto a los datos enriquecidos.
+
+## Estructura relevante
+
+```
+src/app/
+ ├─ core/            # interfaces, validadores, interceptores
+ ├─ private/
+ │   └─ candidates/
+ │      ├─ containers/upload-candidate
+ │      ├─ components/candidate-table
+ │      └─ services/
+ └─ shared/
+     └─ components/drop-files-zone
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Tests
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Cada servicio y componente principal cuenta con unit tests. Para ejecutarlas:
 
 ```bash
-ng generate component component-name
+npm test
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Se incluye cobertura para:
 
-```bash
-ng generate --help
-```
+- Interacción del formulario (`UploadCandidateComponent`)
+- Servicios API y almacenamiento
+- Dropzone y tabla de candidatos
+- Interceptor de errores HTTP
 
-## Building
+## Notas
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- El backend debe exponer `POST /candidates/upload` aceptando `multipart/form-data`.
+- Las rutas del entorno se configuran en `src/environments`.
+- El proyecto utiliza un interceptor para mapear mensajes del backend a errores amigables para el usuario.

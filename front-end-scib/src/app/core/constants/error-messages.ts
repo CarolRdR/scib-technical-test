@@ -1,18 +1,18 @@
-export const ERROR_MESSAGES = {
+export const ERROR_MESSAGE_KEYS = {
   upload: {
-    default: 'No se pudo cargar el candidato. Intenta nuevamente.',
-    availability: 'Disponibilidad inválida. Asegúrate de utilizar valores booleanos.',
-    years: 'Los años de experiencia deben ser un número positivo.',
-    file: 'No se pudo leer el archivo. Verifica el formato.'
+    default: 'ERRORS.UPLOAD_DEFAULT',
+    availability: 'ERRORS.UPLOAD_AVAILABILITY',
+    years: 'ERRORS.UPLOAD_YEARS',
+    file: 'ERRORS.UPLOAD_FILE'
   },
   general: {
-    unknown: 'Ha ocurrido un error inesperado.'
+    unknown: 'ERRORS.UPLOAD_UNKNOWN'
   }
 } as const;
 
-export const BACKEND_ERROR_MESSAGE_MAP: Record<string, string> = {
-  'Availability must be a boolean': ERROR_MESSAGES.upload.availability,
-  'Years must be a positive integer': ERROR_MESSAGES.upload.years,
-  'Excel file is required': ERROR_MESSAGES.upload.file,
-  'Excel payload is invalid': ERROR_MESSAGES.upload.file
+export const BACKEND_ERROR_MESSAGE_KEYS_MAP: Record<string, string> = {
+  'Availability must be a boolean': ERROR_MESSAGE_KEYS.upload.availability,
+  'Years must be a positive integer': ERROR_MESSAGE_KEYS.upload.years,
+  'Excel file is required': ERROR_MESSAGE_KEYS.upload.file,
+  'Excel payload is invalid': ERROR_MESSAGE_KEYS.upload.file
 };

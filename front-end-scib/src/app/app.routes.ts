@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { UploadCandidateComponent } from './private/candidates/containers/upload-candidate/upload-candidate.component';
 
 export const routes: Routes = [
   {
@@ -9,7 +8,7 @@ export const routes: Routes = [
   },
   {
     path: 'candidates',
-    component: UploadCandidateComponent
+    loadComponent: () => import('./private/candidates/containers/upload-candidate/upload-candidate.component').then(m => m.UploadCandidateComponent)
   },
   {
     path: '**',

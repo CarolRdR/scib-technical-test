@@ -1,16 +1,17 @@
 .candidates-layout {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  // flex-direction: column;
   justify-content: center;
   gap: 1.5rem;
   align-items: center;
-  width: 100%;
-  // grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  // width: 100%;
+  padding: 0 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
 .upload-card {
   height: fit-content;
-  padding: 2rem;
+  padding: 1.5rem;
 }
 
 .upload-form {
