@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -15,6 +15,7 @@ import {
   ExcelValidationError
 } from '../../../../core/utils/validators/excel-file.validator';
 import { DropFilesZoneComponent } from '../../../../shared/components/drop-files-zone/drop-files-zone';
+import { HeaderComponent } from '../../../../shared/components/header/header';
 import { MATERIAL_IMPORTS } from '../../../../shared/imports/material.imports';
 import { CandidateTableComponent } from '../../components/candidate-table/candidate-table.component';
 import { CandidateApiService } from '../../services/api/candidate-api.service';
@@ -31,7 +32,8 @@ import { CandidateStorageService } from '../../services/storage/candidate-storag
     ...MATERIAL_IMPORTS,
     CandidateTableComponent,
     DropFilesZoneComponent,
-    TranslateModule
+    TranslateModule,
+    HeaderComponent
   ],
   templateUrl: './upload-candidate.component.html',
   styleUrl: './upload-candidate.component.scss',

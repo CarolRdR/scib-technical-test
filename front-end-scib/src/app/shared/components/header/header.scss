@@ -1,0 +1,41 @@
+.header-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+
+  &__title {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--foreground, #1f1f1f);
+      margin:0;
+      line-height: 1;
+    }
+
+    &__subtitle {
+      margin: 0;
+      max-width: 42rem;
+      font-size: 1.125rem;
+      color: color-mix(in srgb, var(--foreground, #1f1f1f) 60%, transparent);
+    }
+
+}
+
+@media (max-width: 960px) {
+  .header-layout {
+    gap: 0.8rem;
+
+    &__title {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    &__subtitle {
+      font-size: 1rem;
+      color: color-mix(in srgb, var(--foreground, #1f1f1f) 60%, transparent);
+    }
+  }
+}

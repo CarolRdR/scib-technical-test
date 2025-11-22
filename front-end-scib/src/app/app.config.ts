@@ -2,7 +2,6 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   importProvidersFrom,
-  LOCALE_ID,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection
 } from '@angular/core';
@@ -25,14 +24,13 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([httpErrorInterceptor])),
     importProvidersFrom(MatSnackBarModule),
-    { provide: LOCALE_ID, useValue: 'es-ES' },
     provideTranslateService({
       loader: provideTranslateHttpLoader({
-        prefix: 'assets/i18n/',
+        prefix: '/assets/i18n/',
         suffix: '.json'
       }),
-      fallbackLang: 'en',
-      lang: 'es'
+      // fallbackLang: 'en',
+      // lang: navigator.language.startsWith('en') ? 'en' : 'es',
     })
   ]
 };

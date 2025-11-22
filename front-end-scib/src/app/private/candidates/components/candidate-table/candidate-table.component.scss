@@ -2,22 +2,11 @@
   padding: 1.5rem;
   position: relative;
   width: 100%;
-  max-width: 900px;
+  min-height: 29rem;
 }
 
 .candidate-table {
   width: 100%;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-
-  h2 {
-    margin: 0;
-  }
 }
 
 .empty-state {

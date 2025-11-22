@@ -1,6 +1,11 @@
 {
   "UPLOAD_CANDIDATE": {
-    "TITLE": "Cargar candidato",
+    "HEADER": {
+      "TITLE": "Enviar candidato",
+      "SUBTITLE": "Rellena el formulario y carga el archivo."
+    },
+    "TITLE": "Información del candidato",
+    "SUBTITLE": "Todos los campos son obligatorios.",
     "FIELDS": {
       "NAME_LABEL": "Nombre",
       "NAME_PLACEHOLDER": "Ej: Ana",
@@ -25,6 +30,10 @@
     "SNACKBAR_SUCCESS": "Candidato cargado correctamente."
   },
   "CANDIDATE_TABLE": {
+    "HEADER": {
+      "TITLE": "Candidatos registrados",
+      "SUBTITLE": "Estos son los candidatos de nuestro banco de talento."
+    },
     "TITLE": "Listado de candidatos",
     "EMPTY": "Aún no se han cargado candidatos.",
     "LOADING": "Estamos cargando la información...",
@@ -55,5 +64,9 @@
   },
   "COMMON": {
     "CLOSE": "Cerrar"
+  },
+  "HEADER": {
+    "TITLE": "Bienvenido a SCIBTalent",
+    "SUBTITLE": "Completa la información a continuación para añadir candidatos a nuestro talento."
   }
 }

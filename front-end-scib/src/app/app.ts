@@ -15,9 +15,9 @@ export class App {
   }
 
   private initializeLanguage(): void {
-    this.translate.setFallbackLang('es');
     const browserLang = this.translate.getBrowserLang() ?? 'es';
     const normalizedLang = browserLang.startsWith('en') ? 'en' : 'es';
+    this.translate.setFallbackLang('en');
     this.translate.use(normalizedLang);
   }
 }

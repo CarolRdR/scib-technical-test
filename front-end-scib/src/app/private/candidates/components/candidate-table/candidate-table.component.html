@@ -1,12 +1,9 @@
 <mat-card class="candidate-table-card">
-  <div class="header">
-    <h2>{{ 'CANDIDATE_TABLE.TITLE' | translate }}</h2>
-    @if (isLoading()) {
-      <mat-progress-spinner diameter="32" mode="indeterminate"></mat-progress-spinner>
-    }
-  </div>
 
   <div class="body">
+    @if (isLoading()) {
+    <mat-progress-spinner diameter="32" mode="indeterminate"></mat-progress-spinner>
+    }
     @if (hasCandidates()) {
       <table mat-table [dataSource]="candidates()" class="candidate-table">
         <ng-container matColumnDef="name">
