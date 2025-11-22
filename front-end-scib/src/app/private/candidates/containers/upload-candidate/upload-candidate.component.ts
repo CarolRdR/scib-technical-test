@@ -146,7 +146,6 @@ export class UploadCandidateComponent {
       normalizedRow['anosexperiencia'] ??
       normalizedRow['experiencia'] ??
       normalizedRow['yearsofexperience'];
-
     const years = Number(yearsRaw);
     if (!Number.isFinite(years) || years < 0) {
       throw new ExcelValidationError('El campo "Años de experiencia" debe ser un número válido.');
