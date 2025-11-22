@@ -1,0 +1,33 @@
+.candidate-table-card {
+  padding: 1.5rem;
+  position: relative;
+}
+
+.candidate-table {
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.empty-state {
+  margin: 1rem 0;
+  color: #666;
+  font-style: italic;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.body {
+  overflow:auto;
+}

@@ -14,12 +14,14 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
+import { ERROR_MESSAGES } from '../../../../core/constants/error-messages';
 import {
   ensureSingleDataRow,
   ensureXlsxFile,
   ExcelValidationError
 } from '../../../../core/utils/validators/excel-file.validator';
 import { MATERIAL_IMPORTS } from '../../../../shared/imports/material.imports';
+import { CandidateTableComponent } from '../../components/candidate-table/candidate-table.component';
 import { CandidateApiService } from '../../services/candidate-api.service';
 import { CandidateStorageService } from '../../services/candidate-storage.service';
 
@@ -31,7 +33,8 @@ import { CandidateStorageService } from '../../services/candidate-storage.servic
     ReactiveFormsModule,
     MatProgressBarModule,
     MatSnackBarModule,
-    ...MATERIAL_IMPORTS
+    ...MATERIAL_IMPORTS,
+    CandidateTableComponent
   ],
   templateUrl: './upload-candidate.component.html',
   styleUrl: './upload-candidate.component.scss',
@@ -77,6 +80,7 @@ export class UploadCandidateComponent {
     }
 
     this.isSubmitting.set(true);
+    this.candidateStorage.setLoading(true);
 
     try {
       const candidate = await firstValueFrom(
@@ -97,6 +101,7 @@ export class UploadCandidateComponent {
       this.presentError(error);
     } finally {
       this.isSubmitting.set(false);
+      this.candidateStorage.setLoading(false);
     }
   }
 
@@ -181,7 +186,7 @@ export class UploadCandidateComponent {
     const message =
       error instanceof ExcelValidationError
         ? error.message
-        : 'No se pudo cargar el candidato. Intenta nuevamente.';
+        : ERROR_MESSAGES.upload.default;
     this.snackBar.open(message, 'Cerrar', { duration: 4000 });
   }
 

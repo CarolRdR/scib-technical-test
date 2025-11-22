@@ -1,56 +1,60 @@
-<mat-card class="upload-card">
-  <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
-    <h2>Cargar candidato</h2>
+<div class="candidates-layout">
+  <mat-card class="upload-card">
+    <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
+      <h2>Cargar candidato</h2>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Nombre</mat-label>
-      <input matInput formControlName="name" placeholder="Ej: Ana" />
-      @if (uploadForm.controls.name.hasError('required')) {
-        <mat-error>Campo obligatorio</mat-error>
-      }
-      @if (uploadForm.controls.name.hasError('maxlength')) {
-        <mat-error>
-        Máximo 80 caracteres
-        </mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="name" placeholder="Ej: Ana" />
+        @if (uploadForm.controls.name.hasError('required')) {
+          <mat-error>Campo obligatorio</mat-error>
+        }
+        @if (uploadForm.controls.name.hasError('maxlength')) {
+          <mat-error>
+            Máximo 80 caracteres
+          </mat-error>
+        }
+      </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Apellido</mat-label>
-      <input matInput formControlName="surname" placeholder="Ej: García" />
-      @if (uploadForm.controls.surname.hasError('required')) {
-        <mat-error>Campo obligatorio</mat-error>
-      }
-      @if (uploadForm.controls.surname.hasError('maxlength')) {
-        <mat-error>Máximo 80 caracteres</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido</mat-label>
+        <input matInput formControlName="surname" placeholder="Ej: García" />
+        @if (uploadForm.controls.surname.hasError('required')) {
+          <mat-error>Campo obligatorio</mat-error>
+        }
+        @if (uploadForm.controls.surname.hasError('maxlength')) {
+          <mat-error>Máximo 80 caracteres</mat-error>
+        }
+      </mat-form-field>
 
-    <div class="file-field">
-      <input
-        #fileInput
-        type="file"
-        accept=".xlsx"
-        (change)="onFileChange($event)"
-        class="visually-hidden"
-      />
-      <button type="button" mat-stroked-button color="primary" (click)="fileInput.click()">
-        Seleccionar Excel
+      <div class="file-field">
+        <input
+          #fileInput
+          type="file"
+          accept=".xlsx"
+          (change)="onFileChange($event)"
+          class="visually-hidden"
+        />
+        <button type="button" mat-stroked-button color="primary" (click)="fileInput.click()">
+          Seleccionar Excel
+        </button>
+        <span class="file-name" [class.placeholder]="!hasSelectedFile()">
+          {{ selectedFileName() || 'Ningún archivo seleccionado' }}
+        </span>
+      </div>
+      @if (uploadForm.controls.file.hasError('required')) {
+        <mat-error>Adjunta un archivo.</mat-error>
+      }
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Cargando...' : 'Enviar' }}
       </button>
-      <span class="file-name" [class.placeholder]="!hasSelectedFile()">
-        {{ selectedFileName() || 'Ningún archivo seleccionado' }}
-      </span>
-    </div>
-    @if (uploadForm.controls.file.hasError('required')) {
-      <mat-error>Adjunta un archivo.</mat-error>
-    }
 
-    <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting()">
-      {{ isSubmitting() ? 'Cargando...' : 'Enviar' }}
-    </button>
+      @if (isSubmitting()) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      }
+    </form>
+  </mat-card>
 
-    @if (isSubmitting()) {
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    }
-  </form>
-</mat-card>
+  <app-candidate-table />
+</div>
