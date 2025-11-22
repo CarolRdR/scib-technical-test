@@ -1,15 +1,15 @@
 # SCIB Candidates Frontend
 
-Aplicación Angular (v20) que permite cargar candidatos mediante un formulario reactivo, subir un archivo Excel con su información y visualizar los candidatos procesados por el backend de NestJS.
+Aplicacion Angular (v20) que permite cargar candidatos mediante un formulario reactivo, subir un archivo Excel con su informacion y visualizar los candidatos procesados por el backend NestJS.
 
 ## Requisitos funcionales
 
-- Formulario con nombre, apellido y un archivo Excel (`.xlsx`) que contenga una única fila con:
+- Formulario con nombre, apellido y un archivo Excel (`.xlsx`) que contenga una unica fila con:
   - `seniority`: `junior` | `senior`
-  - `years`: número entero positivo
+  - `years`: numero entero positivo
   - `availability`: boolean (`true/false`, `yes/no`, `1/0`, etc.)
 - El Excel se valida en cliente antes de enviarse y se normaliza para garantizar el formato esperado por el backend.
-- Los candidatos devueltos se almacenan en memoria y se muestran en una tabla de Angular Material.
+- Los candidatos devueltos se almacenan en memoria y se muestran en una tabla de Angular Material; al iniciar se consulta `GET /candidates` para recuperar los persistidos en el backend.
 - Manejo de errores global (via interceptor) y feedback visual en la interfaz (snackbars, estados de carga, dropzone accesible).
 
 ## Stack
@@ -17,38 +17,38 @@ Aplicación Angular (v20) que permite cargar candidatos mediante un formulario r
 - Angular 20 standalone + Angular Material
 - Reactive Forms + Signals
 - Custom dropzone para archivos `.xlsx`
-- Servicios dedicados (`CandidateApiService`, `CandidateStorageService`) y helper de validación
+- Servicios dedicados (`CandidateApiService`, `CandidateStorageService`) y helper de validacion
 - Tests con Karma/Jasmine (`ng test`)
 
 ## Scripts clave
 
-| Comando              | Descripción                                               |
+| Comando              | Descripcion                                               |
 | -------------------- | --------------------------------------------------------- |
 | `npm install`        | Instala dependencias                                      |
 | `npm start`          | Levanta el servidor de desarrollo (http://localhost:4200) |
-| `npm run start:prod` | Levanta la app con configuración de producción            |
-| `npm run build`      | Compila la app para producción en `dist/`                 |
+| `npm run start:prod` | Levanta la app con configuracion de produccion            |
+| `npm run build`      | Compila la app para produccion en `dist/`                 |
 | `npm test`           | Ejecuta los unit tests con Karma                          |
 
 ## Flujo de trabajo recomendado
 
-1. **Levantar backend** en `http://localhost:3000` (NestJS).
+1. **Levantar backend** en `http://localhost:3000` (NestJS). El frontend realiza `GET /candidates` al cargar para poblar la tabla, por lo que la API debe estar disponible.
 2. **Iniciar frontend** con `npm start`.
-3. Completar el formulario, arrastrar o seleccionar un Excel válido y enviar.
-4. Verificar que el candidato aparece en la tabla junto a los datos enriquecidos.
+3. Completar el formulario, arrastrar o seleccionar un Excel valido y enviar.
+4. Verificar que el candidato aparece en la tabla junto a los datos enriquecidos y que persiste tras refrescar gracias al backend.
 
 ## Estructura relevante
 
 ```
 src/app/
- ├─ core/            # interfaces, validadores, interceptores
- ├─ private/
- │   └─ candidates/
- │      ├─ containers/upload-candidate
- │      ├─ components/candidate-table
- │      └─ services/
- └─ shared/
-     └─ components/drop-files-zone
+  core/            # interfaces, validadores, interceptores
+  private/
+    candidates/
+      containers/upload-candidate
+      components/candidate-table
+      services/
+  shared/
+    components/drop-files-zone
 ```
 
 ## Tests
@@ -61,7 +61,7 @@ npm test
 
 Se incluye cobertura para:
 
-- Interacción del formulario (`UploadCandidateComponent`)
+- Interaccion del formulario (`UploadCandidateComponent`)
 - Servicios API y almacenamiento
 - Dropzone y tabla de candidatos
 - Interceptor de errores HTTP
