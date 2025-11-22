@@ -6,6 +6,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || 3000;
 
+  app.enableCors({
+    origin: ['http://localhost:4200'],
+  });
+
   const config = new DocumentBuilder()
     .setTitle('SCIB Candidates API')
     .setDescription('Endpoints for loading candidates')
