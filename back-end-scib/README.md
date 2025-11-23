@@ -89,10 +89,6 @@ Default URL: `http://localhost:3000`
 - `xlsx` for Excel parsing
 - Jest + Supertest for testing
 
-## Nice-to-haves / Roadmap
+## Roadmap
 
 - More detailed DTO validation and custom messages.
-
-## Author
-
-Built as part of the SCIB technical assignment. Feel free to fork or extend it.
