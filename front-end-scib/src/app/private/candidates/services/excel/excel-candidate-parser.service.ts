@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { FALSE_AVAILABILITY_VALUES, TRUE_AVAILABILITY_VALUES, YEARS_KEYS } from '../../../../core/constants/excel/excel-candidate.constants';
+import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/errors/error-messages';
 import { CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
 import { ExcelCandidateParseResult } from '../../../../core/interfaces/excel-candidate-parse.interface';
 import { ensureSingleDataRow, ExcelValidationError } from '../../../../core/utils/validators/excel-file.validator';
@@ -11,7 +12,7 @@ import { ensureSingleDataRow, ExcelValidationError } from '../../../../core/util
 
 export class ExcelCandidateParserService {
   // Parses file into domain data and normalized xlsx ready for upload.
-  async parseCandidateFile(file: File): Promise<ExcelCandidateParseResult> {
+  public async parseCandidateFile(file: File): Promise<ExcelCandidateParseResult> {
     const rows = await this.extractExcelRows(file);
     const excelData = ensureSingleDataRow(rows);
     const normalizedFile = this.normalizeExcelFile(excelData, file);
@@ -25,7 +26,7 @@ export class ExcelCandidateParserService {
     const [firstSheetName] = workbook.SheetNames;
 
     if (!firstSheetName) {
-      throw new ExcelValidationError('El archivo no contiene hojas.');
+      throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.noSheets);
     }
 
     const sheet = workbook.Sheets[firstSheetName];
@@ -66,7 +67,7 @@ export class ExcelCandidateParserService {
   private extractSeniority(row: Record<string, unknown>): CandidateExcelData['seniority'] {
     const seniorityValue = String(row['seniority'] ?? '').toLowerCase().trim();
     if (seniorityValue !== 'junior' && seniorityValue !== 'senior') {
-      throw new ExcelValidationError('El campo "Seniority" debe ser "junior" o "senior".');
+      throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.seniority);
     }
 
     return seniorityValue as CandidateExcelData['seniority'];
@@ -77,7 +78,7 @@ export class ExcelCandidateParserService {
     const yearsRaw = YEARS_KEYS.map((key) => row[key]).find((value) => value !== undefined);
     const years = Number(yearsRaw);
     if (!Number.isFinite(years) || years < 0) {
-      throw new ExcelValidationError('El campo "Años de experiencia" debe ser un número válido.');
+      throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.years);
     }
     return years;
   }
@@ -86,7 +87,7 @@ export class ExcelCandidateParserService {
   private extractAvailability(row: Record<string, unknown>): boolean {
     const availabilityRaw = row['availability'] ?? row['disponibilidad'];
     if (availabilityRaw === undefined || availabilityRaw === null || availabilityRaw === '') {
-      throw new ExcelValidationError('La columna "Disponibilidad" es obligatoria.');
+      throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.availabilityRequired);
     }
 
     if (typeof availabilityRaw === 'boolean') {
@@ -100,7 +101,7 @@ export class ExcelCandidateParserService {
     if (FALSE_AVAILABILITY_VALUES.includes(normalizedAvailability)) {
       return false;
     }
-    throw new ExcelValidationError('La columna "Disponibilidad" debe ser booleana.');
+    throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.availability);
   }
 
 

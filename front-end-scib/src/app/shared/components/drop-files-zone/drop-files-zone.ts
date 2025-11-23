@@ -89,7 +89,7 @@ export class DropFilesZoneComponent {
 
     const files = event.dataTransfer?.files;
     if (!files?.length) {
-      this.control?.markAsTouched();
+      this.markControlTouched();
       this.cdr.markForCheck();
       return;
     }
@@ -102,7 +102,7 @@ export class DropFilesZoneComponent {
     const input = event.target as HTMLInputElement;
     const file = input.files?.item(0);
     if (!file) {
-      this.control?.markAsTouched();
+      this.markControlTouched();
       this.cdr.markForCheck();
       return;
     }
@@ -118,9 +118,7 @@ export class DropFilesZoneComponent {
       return;
     }
     this.control.setValue(null);
-    this.control.markAsDirty();
-    this.control.markAsTouched();
-    this.control.updateValueAndValidity();
+    this.markControlTouched();
     this.clearInput();
     this.cdr.markForCheck();
   }
@@ -132,6 +130,13 @@ export class DropFilesZoneComponent {
     }
 
     this.control.setValue(file);
+    this.markControlTouched();
+  }
+
+  private markControlTouched(): void {
+    if (!this.control) {
+      return;
+    }
     this.control.markAsDirty();
     this.control.markAsTouched();
     this.control.updateValueAndValidity();

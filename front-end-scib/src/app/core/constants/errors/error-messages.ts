@@ -2,8 +2,11 @@ export const ERROR_MESSAGE_KEYS = {
   upload: {
     default: 'ERRORS.UPLOAD_DEFAULT',
     availability: 'ERRORS.UPLOAD_AVAILABILITY',
+    availabilityRequired: 'ERRORS.UPLOAD_AVAILABILITY_REQUIRED',
     years: 'ERRORS.UPLOAD_YEARS',
-    file: 'ERRORS.UPLOAD_FILE'
+    file: 'ERRORS.UPLOAD_FILE',
+    noSheets: 'ERRORS.UPLOAD_NO_SHEETS',
+    seniority: 'ERRORS.UPLOAD_SENIORITY'
   },
   general: {
     unknown: 'ERRORS.UPLOAD_UNKNOWN'

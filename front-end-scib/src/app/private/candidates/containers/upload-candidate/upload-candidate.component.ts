@@ -3,15 +3,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/errors/error-messages';
-import { Candidate } from '../../../../core/interfaces/candidate.interface';
+import { Candidate, CandidateUploadPayload, UploadCandidateForm } from '../../../../core/interfaces/candidate.interface';
 import { ensureXlsxFile, ExcelValidationError } from '../../../../core/utils/validators/excel-file.validator';
 import { DropFilesZoneComponent } from '../../../../shared/components/drop-files-zone/drop-files-zone';
 import { HeaderComponent } from '../../../../shared/components/header/header';
 import { MATERIAL_IMPORTS } from '../../../../shared/imports/material.imports';
+import { NotificationService } from '../../../../shared/services/notification.service';
 import { CandidateTableComponent } from '../../components/candidate-table/candidate-table.component';
 import { CandidateApiService } from '../../services/api/candidate-api.service';
 import { ExcelCandidateParserService } from '../../services/excel/excel-candidate-parser.service';
@@ -37,64 +38,54 @@ import { CandidateStorageService } from '../../services/storage/candidate-storag
 })
 export class UploadCandidateComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly snackBar = inject(MatSnackBar);
   private readonly candidateApi = inject(CandidateApiService);
   private readonly candidateStorage = inject(CandidateStorageService);
-  private readonly translate = inject(TranslateService);
   private readonly excelParser = inject(ExcelCandidateParserService);
+  private readonly notifications = inject(NotificationService);
 
-  public readonly uploadForm = this.fb.nonNullable.group({
+  public readonly uploadForm: UploadCandidateForm = this.fb.group({
     name: this.fb.nonNullable.control('', { validators: [Validators.required, Validators.maxLength(80)] }),
     surname: this.fb.nonNullable.control('', {
       validators: [Validators.required, Validators.maxLength(80)]
     }),
     file: this.fb.control<File | null>(null, { validators: [Validators.required] })
-  });
+  }) as UploadCandidateForm;
 
   public readonly isSubmitting = signal(false);
 
+  // Initializes component data when view loads.
   ngOnInit(): void {
     void this.loadExistingCandidates();
   }
 
+  // Typed shortcut to access form controls.
+  private get controls(): UploadCandidateForm['controls'] {
+    return this.uploadForm.controls;
+  }
+
+  // Handles user submission by preparing payload and persisting candidate.
   public async onSubmit(): Promise<void> {
     if (this.uploadForm.invalid || this.isSubmitting()) {
       this.uploadForm.markAllAsTouched();
       return;
     }
 
-    const file = ensureXlsxFile(this.uploadForm.controls.file.value);
-    let normalizedFile: File;
+    let payload: CandidateUploadPayload;
     try {
-      const { normalizedFile: parsedFile } = await this.excelParser.parseCandidateFile(file);
-      normalizedFile = parsedFile;
+      payload = await this.preparePayload();
     } catch (error) {
       this.presentError(error);
       return;
     }
 
-    this.isSubmitting.set(true);
-    this.candidateStorage.setLoading(true);
-
     try {
-      const candidate = await firstValueFrom(
-        this.candidateApi.uploadCandidate({
-          name: this.uploadForm.controls.name.value,
-          surname: this.uploadForm.controls.surname.value,
-          file: normalizedFile
-        })
-      );
-      this.candidateStorage.addCandidate(candidate);
-      this.uploadForm.reset({ name: '', surname: '', file: null });
-      this.notifySuccess(candidate);
+      await this.withSubmission(() => this.persistCandidate(payload));
     } catch (error) {
       this.presentError(error);
-    } finally {
-      this.isSubmitting.set(false);
-      this.candidateStorage.setLoading(false);
     }
   }
 
+  // Fetches existing candidates to hydrate storage/table.
   private async loadExistingCandidates(): Promise<void> {
     this.candidateStorage.setLoading(true);
     try {
@@ -107,18 +98,15 @@ export class UploadCandidateComponent {
     }
   }
 
+  // Shows translated success snackbar when new candidate is added.
   private notifySuccess(candidate: Candidate): void {
-    const successMessage = this.translate.instant('UPLOAD_CANDIDATE.SNACKBAR_SUCCESS', {
+    this.notifications.showSuccess('UPLOAD_CANDIDATE.SNACKBAR_SUCCESS', {
       name: candidate.name,
       surname: candidate.surname
     });
-    const closeLabel = this.translate.instant('COMMON.CLOSE');
-    this.snackBar.open(successMessage, closeLabel, {
-      duration: 3000,
-      panelClass: ['snackbar-success']
-    });
   }
 
+  // Displays translated error snackbar unless HTTP layer already handled it.
   private presentError(error: unknown): void {
     if (error instanceof HttpErrorResponse) {
       // Global interceptor handles HTTP errors.
@@ -127,9 +115,39 @@ export class UploadCandidateComponent {
 
     const key =
       error instanceof ExcelValidationError ? error.translationKey : ERROR_MESSAGE_KEYS.general.unknown;
-    const message = this.translate.instant(key);
-    const closeLabel = this.translate.instant('COMMON.CLOSE');
-    this.snackBar.open(message, closeLabel, { duration: 4000, panelClass: ['snackbar-error'] });
+    this.notifications.showError(key);
   }
 
+  // Builds upload payload ensuring file is normalized and form values gathered.
+  private async preparePayload(): Promise<CandidateUploadPayload> {
+    const { name, surname, file } = this.controls;
+    const ensuredFile = ensureXlsxFile(file.value);
+    const { normalizedFile } = await this.excelParser.parseCandidateFile(ensuredFile);
+
+    return {
+      name: name.value,
+      surname: surname.value,
+      file: normalizedFile
+    };
+  }
+
+  // Calls API, updates store, resets form and notifies success.
+  private async persistCandidate(payload: CandidateUploadPayload): Promise<void> {
+    const candidate = await firstValueFrom(this.candidateApi.uploadCandidate(payload));
+    this.candidateStorage.addCandidate(candidate);
+    this.uploadForm.reset({ name: '', surname: '', file: null });
+    this.notifySuccess(candidate);
+  }
+
+  // Wraps async operation toggling submitting/loading flags automatically.
+  private async withSubmission<T>(operation: () => Promise<T>): Promise<T> {
+    this.isSubmitting.set(true);
+    this.candidateStorage.setLoading(true);
+    try {
+      return await operation();
+    } finally {
+      this.isSubmitting.set(false);
+      this.candidateStorage.setLoading(false);
+    }
+  }
 }

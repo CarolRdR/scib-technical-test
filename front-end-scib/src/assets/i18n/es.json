@@ -62,8 +62,11 @@
   "ERRORS": {
     "UPLOAD_DEFAULT": "No se pudo cargar el candidato. Intenta nuevamente.",
     "UPLOAD_AVAILABILITY": "La disponibilidad debe ser booleana.",
+    "UPLOAD_AVAILABILITY_REQUIRED": "La disponibilidad es obligatoria.",
     "UPLOAD_YEARS": "Los años de experiencia deben ser un número positivo.",
     "UPLOAD_FILE": "El archivo Excel es inválido o no se pudo leer.",
+    "UPLOAD_NO_SHEETS": "El archivo Excel no contiene hojas.",
+    "UPLOAD_SENIORITY": "El campo de seniority debe ser \"junior\" o \"senior\".",
     "UPLOAD_UNKNOWN": "Ha ocurrido un error inesperado."
   },
   "COMMON": {

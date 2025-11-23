@@ -15,6 +15,7 @@ export class ExcelValidationError extends Error {
 
 const FILE_ERROR_KEY = 'ERRORS.UPLOAD_FILE';
 
+// Validates the provided file is present and matches expected XLSX characteristics.
 export function ensureXlsxFile(file: File | null | undefined): File {
   if (!file) {
     throw new ExcelValidationError(FILE_ERROR_KEY);
@@ -31,6 +32,7 @@ export function ensureXlsxFile(file: File | null | undefined): File {
   return file;
 }
 
+// Ensures the parsed workbook contains exactly one candidate row.
 export function ensureSingleDataRow(
   rows: CandidateExcelData[] | null | undefined
 ): CandidateExcelData {

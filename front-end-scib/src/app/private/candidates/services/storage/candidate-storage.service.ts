@@ -11,21 +11,21 @@ export class CandidateStorageService {
   readonly candidates = computed(() => this.candidatesSignal());
   readonly isLoading = computed(() => this.loadingSignal());
 
-  setCandidates(candidates: Candidate[]): void {
+  public setCandidates(candidates: Candidate[]): void {
     this.candidatesSignal.set(candidates);
     this.loadingSignal.set(false);
   }
 
-  setLoading(isLoading: boolean): void {
+  public setLoading(isLoading: boolean): void {
     this.loadingSignal.set(isLoading);
   }
 
-  addCandidate(candidate: Candidate): void {
+  public addCandidate(candidate: Candidate): void {
     this.candidatesSignal.update((current) => [...current, candidate]);
     this.setLoading(false);
   }
 
-  reset(): void {
+  public reset(): void {
     this.candidatesSignal.set([]);
     this.setLoading(false);
   }

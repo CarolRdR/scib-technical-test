@@ -1,3 +1,5 @@
+import { FormControl, FormGroup } from '@angular/forms';
+
 export type CandidateSeniority = 'junior' | 'senior';
 
 export interface CandidateExcelData {
@@ -13,3 +15,9 @@ export interface CandidateFormValue extends CandidateExcelData {
 }
 
 export type Candidate = Omit<CandidateFormValue, 'file'>;
+export type CandidateUploadPayload = Pick<CandidateFormValue, 'name' | 'surname' | 'file'>;
+export type UploadCandidateForm = FormGroup<{
+  name: FormControl<string>;
+  surname: FormControl<string>;
+  file: FormControl<File | null>;
+}>;

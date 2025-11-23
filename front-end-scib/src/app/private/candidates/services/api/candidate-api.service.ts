@@ -2,13 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
-import { Candidate } from '../../../../core/interfaces/candidate.interface';
-
-export interface UploadCandidatePayload {
-  name: string;
-  surname: string;
-  file: File;
-}
+import { Candidate, CandidateUploadPayload } from '../../../../core/interfaces/candidate.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +12,11 @@ export class CandidateApiService {
 
   constructor(private readonly http: HttpClient) {}
 
-  listCandidates(): Observable<Candidate[]> {
+  public listCandidates(): Observable<Candidate[]> {
     return this.http.get<Candidate[]>(this.baseUrl);
   }
 
-  uploadCandidate(payload: UploadCandidatePayload): Observable<Candidate> {
+  public uploadCandidate(payload: CandidateUploadPayload): Observable<Candidate> {
     const formData = new FormData();
     formData.append('name', payload.name);
     formData.append('surname', payload.surname);

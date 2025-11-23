@@ -60,12 +60,15 @@
     "REMOVE": "Remove file"
   },
   "ERRORS": {
-    "UPLOAD_DEFAULT": "We couldn't upload the candidate. Please try again.",
-    "UPLOAD_AVAILABILITY": "Availability must be a boolean value.",
-    "UPLOAD_YEARS": "Years of experience must be a positive number.",
-    "UPLOAD_FILE": "The Excel file is invalid or couldn't be read.",
-    "UPLOAD_UNKNOWN": "An unexpected error occurred."
-  },
+      "UPLOAD_DEFAULT": "We couldn't upload the candidate. Please try again.",
+      "UPLOAD_AVAILABILITY": "Availability must be a boolean value.",
+      "UPLOAD_AVAILABILITY_REQUIRED": "Availability is required.",
+      "UPLOAD_YEARS": "Years of experience must be a positive number.",
+      "UPLOAD_FILE": "The Excel file is invalid or couldn't be read.",
+      "UPLOAD_NO_SHEETS": "The Excel file does not contain any sheets.",
+      "UPLOAD_SENIORITY": "Seniority must be either \"junior\" or \"senior\".",
+      "UPLOAD_UNKNOWN": "An unexpected error occurred."
+    },
   "COMMON": {
     "CLOSE": "Close"
   },

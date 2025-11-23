@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ANIMATION_MODULE_TYPE } from '@angular/platform-browser/animations';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { Candidate } from '../../../../core/interfaces/candidate.interface';
 import { CandidateApiService } from '../../services/api/candidate-api.service';
 import { ExcelCandidateParserService } from '../../services/excel/excel-candidate-parser.service';
 import { CandidateStorageService } from '../../services/storage/candidate-storage.service';
+import { NotificationService } from '../../../../shared/services/notification.service';
 import { UploadCandidateComponent } from './upload-candidate.component';
 
 class CandidateStorageMock {
@@ -22,14 +22,14 @@ describe('UploadCandidateComponent', () => {
   let fixture: ComponentFixture<UploadCandidateComponent>;
   let apiServiceSpy: jasmine.SpyObj<CandidateApiService>;
   let storageMock: CandidateStorageMock;
-  let snackBarSpy: jasmine.SpyObj<MatSnackBar>;
   let excelParserSpy: jasmine.SpyObj<ExcelCandidateParserService>;
+  let notificationSpy: jasmine.SpyObj<NotificationService>;
 
   beforeEach(async () => {
     apiServiceSpy = jasmine.createSpyObj('CandidateApiService', ['uploadCandidate', 'listCandidates']);
     storageMock = new CandidateStorageMock();
-    snackBarSpy = jasmine.createSpyObj('MatSnackBar', ['open']);
     excelParserSpy = jasmine.createSpyObj('ExcelCandidateParserService', ['parseCandidateFile']);
+    notificationSpy = jasmine.createSpyObj('NotificationService', ['showSuccess', 'showError']);
     apiServiceSpy.listCandidates.and.returnValue(of([]));
 
     await TestBed.configureTestingModule({
@@ -38,11 +38,10 @@ describe('UploadCandidateComponent', () => {
         { provide: ANIMATION_MODULE_TYPE, useValue: 'NoopAnimations' },
         { provide: CandidateApiService, useValue: apiServiceSpy },
         { provide: CandidateStorageService, useValue: storageMock },
-        { provide: ExcelCandidateParserService, useValue: excelParserSpy }
+        { provide: ExcelCandidateParserService, useValue: excelParserSpy },
+        { provide: NotificationService, useValue: notificationSpy }
       ]
-    })
-      .overrideProvider(MatSnackBar, { useValue: snackBarSpy })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(UploadCandidateComponent);
     component = fixture.componentInstance;
@@ -98,8 +97,53 @@ describe('UploadCandidateComponent', () => {
     expect(presentErrorSpy).toHaveBeenCalledWith(parserError);
   });
 
-  it('should notify success using translated snackbar', () => {
-    const translate = TestBed.inject(TranslateService);
+  it('should prepare payload by normalizing file through parser', async () => {
+    const rawFile = new File(['raw'], 'raw.xlsx');
+    const normalizedFile = new File(['normalized'], 'normalized.xlsx');
+    component.uploadForm.controls.name.setValue('John');
+    component.uploadForm.controls.surname.setValue('Doe');
+    component.uploadForm.controls.file.setValue(rawFile);
+
+    excelParserSpy.parseCandidateFile.and.returnValue(
+      Promise.resolve({
+        excelData: { seniority: 'junior', years: 1, availability: true },
+        normalizedFile
+      })
+    );
+
+    const payload = await (component as any).preparePayload();
+
+    expect(payload).toEqual({ name: 'John', surname: 'Doe', file: normalizedFile });
+    expect(excelParserSpy.parseCandidateFile).toHaveBeenCalledWith(rawFile);
+  });
+
+  it('should persist candidate, update storage and reset form', async () => {
+    const normalizedFile = new File(['normalized'], 'normalized.xlsx');
+    const payload = { name: 'John', surname: 'Doe', file: normalizedFile };
+    const response: Candidate = {
+      name: 'John',
+      surname: 'Doe',
+      seniority: 'junior',
+      years: 3,
+      availability: true
+    };
+    const notifySpy = spyOn(component as any, 'notifySuccess');
+    component.uploadForm.controls.name.setValue('Initial');
+    component.uploadForm.controls.surname.setValue('Value');
+    component.uploadForm.controls.file.setValue(normalizedFile);
+    apiServiceSpy.uploadCandidate.and.returnValue(of(response));
+
+    await (component as any).persistCandidate(payload);
+
+    expect(apiServiceSpy.uploadCandidate).toHaveBeenCalledWith(payload);
+    expect(storageMock.addCandidate).toHaveBeenCalledWith(response);
+    expect(component.uploadForm.controls.name.value).toBe('');
+    expect(component.uploadForm.controls.surname.value).toBe('');
+    expect(component.uploadForm.controls.file.value).toBeNull();
+    expect(notifySpy).toHaveBeenCalledWith(response);
+  });
+
+  it('should notify success using notification service', () => {
     const candidate: Candidate = {
       name: 'Jane',
       surname: 'Doe',
@@ -110,16 +154,9 @@ describe('UploadCandidateComponent', () => {
 
     (component as any).notifySuccess(candidate);
 
-    expect(snackBarSpy.open).toHaveBeenCalledWith(
-      translate.instant('UPLOAD_CANDIDATE.SNACKBAR_SUCCESS', {
-        name: candidate.name,
-        surname: candidate.surname
-      }),
-      translate.instant('COMMON.CLOSE'),
-      {
-        duration: 3000,
-        panelClass: ['snackbar-success']
-      }
-    );
+    expect(notificationSpy.showSuccess).toHaveBeenCalledWith('UPLOAD_CANDIDATE.SNACKBAR_SUCCESS', {
+      name: candidate.name,
+      surname: candidate.surname
+    });
   });
 });
