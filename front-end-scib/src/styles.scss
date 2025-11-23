@@ -1,9 +1,4 @@
 
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
 *,
@@ -25,11 +20,6 @@ html {
     typography: Roboto,
     density: 0,
   ));
-  // body {
-  // @include mat.theme((
-  //   color: mat.$cyan-palette,
-  //  ));
-  // }
 }
 
 body {
@@ -98,22 +88,21 @@ body {
   align-items: center;
 }
 
-/* Ancho del scroll */
+/* Width scroll */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 /* Fondo del scrollbar */
 ::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
-  /* o color que uses */
+  background: #EEF3F9;
   border-radius: 4px;
 }
 
-/* Thumb (la barra que se arrastra) */
+/* Thumb */
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--foreground));
+  background: #d8dbde;
   border-radius: 4px;
 }
 

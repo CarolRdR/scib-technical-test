@@ -11,8 +11,10 @@
     </div>
       <mat-card class="upload-card">
         <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
-          <h2 class="upload-form__title">{{ 'UPLOAD_CANDIDATE.TITLE' | translate }}</h2>
-
+          <div class="upload-form__header">
+            <h2 class="upload-form__header-title">{{ 'UPLOAD_CANDIDATE.TITLE' | translate }}</h2>
+            <p class="upload-form__header-subtitle">{{ 'UPLOAD_CANDIDATE.SUBTITLE' | translate }}</p>
+          </div>
           <mat-form-field appearance="outline" class="input-bar">
             <mat-label>{{ 'UPLOAD_CANDIDATE.FIELDS.NAME_LABEL' | translate }}</mat-label>
             <input

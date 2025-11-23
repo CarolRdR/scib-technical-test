@@ -42,10 +42,18 @@
 .upload-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  &__title {
-    color: color-mix(in srgb, var(--foreground, #343C43) 100%, transparent);
+  gap: 1.20rem;
+  &__header {
+    display: flex;
+      flex-direction: column;
+    gap: 0.5rem;
+    &-title {
+        color: color-mix(in srgb, var(--foreground, #343C43) 100%, transparent);
+      }
+    &-subtitle {
+      color: color-mix(in srgb, var(--foreground, #343C43) 60%, transparent); }
   }
+
 }
 
 .button-send {
