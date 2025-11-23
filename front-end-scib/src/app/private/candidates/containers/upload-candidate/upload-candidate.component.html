@@ -13,7 +13,7 @@
         <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
           <h2 class="upload-form__title">{{ 'UPLOAD_CANDIDATE.TITLE' | translate }}</h2>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="input-bar">
             <mat-label>{{ 'UPLOAD_CANDIDATE.FIELDS.NAME_LABEL' | translate }}</mat-label>
             <input
               matInput
@@ -29,7 +29,7 @@
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="input-bar">
             <mat-label>{{ 'UPLOAD_CANDIDATE.FIELDS.SURNAME_LABEL' | translate }}</mat-label>
             <input
               matInput

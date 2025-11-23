@@ -61,6 +61,48 @@ describe('ExcelCandidateParserService', () => {
       ERROR_MESSAGE_KEYS.upload.availability
     );
   });
+
+  it('should throw when seniority column is missing', async () => {
+    const file = createExcelFile([
+      {
+        Years: 2,
+        Disponibilidad: 'sí'
+      }
+    ]);
+
+    await expectAsync(service.parseCandidateFile(file)).toBeRejectedWithError(
+      ExcelValidationError,
+      ERROR_MESSAGE_KEYS.upload.missingSeniorityColumn
+    );
+  });
+
+  it('should throw when years column is missing', async () => {
+    const file = createExcelFile([
+      {
+        Seniority: 'Junior',
+        Disponibilidad: 'sí'
+      }
+    ]);
+
+    await expectAsync(service.parseCandidateFile(file)).toBeRejectedWithError(
+      ExcelValidationError,
+      ERROR_MESSAGE_KEYS.upload.missingYearsColumn
+    );
+  });
+
+  it('should throw when availability column is missing', async () => {
+    const file = createExcelFile([
+      {
+        Seniority: 'Junior',
+        Years: 1
+      }
+    ]);
+
+    await expectAsync(service.parseCandidateFile(file)).toBeRejectedWithError(
+      ExcelValidationError,
+      ERROR_MESSAGE_KEYS.upload.missingAvailabilityColumn
+    );
+  });
 });
 
 type CandidateSheetRow = {

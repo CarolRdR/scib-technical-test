@@ -6,7 +6,10 @@ export const ERROR_MESSAGE_KEYS = {
     years: 'ERRORS.UPLOAD_YEARS',
     file: 'ERRORS.UPLOAD_FILE',
     noSheets: 'ERRORS.UPLOAD_NO_SHEETS',
-    seniority: 'ERRORS.UPLOAD_SENIORITY'
+    seniority: 'ERRORS.UPLOAD_SENIORITY',
+    missingSeniorityColumn: 'ERRORS.UPLOAD_MISSING_SENIORITY_COLUMN',
+    missingYearsColumn: 'ERRORS.UPLOAD_MISSING_YEARS_COLUMN',
+    missingAvailabilityColumn: 'ERRORS.UPLOAD_MISSING_AVAILABILITY_COLUMN'
   },
   general: {
     unknown: 'ERRORS.UPLOAD_UNKNOWN'

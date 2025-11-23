@@ -67,6 +67,9 @@
       "UPLOAD_FILE": "The Excel file is invalid or couldn't be read.",
       "UPLOAD_NO_SHEETS": "The Excel file does not contain any sheets.",
       "UPLOAD_SENIORITY": "Seniority must be either \"junior\" or \"senior\".",
+      "UPLOAD_MISSING_SENIORITY_COLUMN": "The Excel file must contain a seniority column.",
+      "UPLOAD_MISSING_YEARS_COLUMN": "The Excel file must contain a years-of-experience column.",
+      "UPLOAD_MISSING_AVAILABILITY_COLUMN": "The Excel file must contain an availability column.",
       "UPLOAD_UNKNOWN": "An unexpected error occurred."
     },
   "COMMON": {

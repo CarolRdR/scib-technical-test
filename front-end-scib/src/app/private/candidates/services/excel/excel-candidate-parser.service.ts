@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as XLSX from 'xlsx';
 import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/errors/error-messages';
+import { EXCEL_ALIAS } from '../../../../core/constants/excel/excel-alias.constants';
 import { CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
 import { ExcelCandidateParseResult } from '../../../../core/interfaces/excel-candidate-parse.interface';
 import {
@@ -37,6 +38,8 @@ export class ExcelCandidateParserService {
 
     const sheet = workbook.Sheets[firstSheetName];
     const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' });
+    const headerRow = rawRows[0] ? this.normalizeRowKeys(rawRows[0]) : {};
+    this.ensureRequiredColumns(headerRow);
 
     return rawRows.map((row) => this.mapRowToCandidateData(row));
   }
@@ -58,12 +61,7 @@ export class ExcelCandidateParserService {
   // Normalizes column names (strip accents/spaces) to simplify key lookups.
   private normalizeRowKeys(row: Record<string, unknown>): Record<string, unknown> {
     return Object.entries(row).reduce<Record<string, unknown>>((acc, [key, value]) => {
-      const normalizedKey = key
-        .toString()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, '')
-        .toLowerCase();
+      const normalizedKey = this.normalizeKey(key);
       acc[normalizedKey] = value;
       return acc;
     }, {});
@@ -110,6 +108,30 @@ export class ExcelCandidateParserService {
     throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.availability);
   }
 
+  private ensureRequiredColumns(row: Record<string, unknown>): void {
+    if (!this.hasAliasKey(row, EXCEL_ALIAS.seniorityColumns)) {
+      throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.missingSeniorityColumn);
+    }
+    if (!this.hasAliasKey(row, EXCEL_ALIAS.years)) {
+      throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.missingYearsColumn);
+    }
+    if (!this.hasAliasKey(row, EXCEL_ALIAS.availabilityColumns)) {
+      throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.missingAvailabilityColumn);
+    }
+  }
+
+  private hasAliasKey(row: Record<string, unknown>, aliases: readonly string[]): boolean {
+    return aliases.some((alias) => Object.prototype.hasOwnProperty.call(row, this.normalizeKey(alias)));
+  }
+
+  private normalizeKey(key: string): string {
+    return key
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, '')
+      .toLowerCase();
+  }
 
   // Builds a single-row Excel file with the expected column names for the API.
   private normalizeExcelFile(excelData: CandidateExcelData, originalFile: File): File {

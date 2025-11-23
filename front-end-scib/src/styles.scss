@@ -69,6 +69,35 @@ body {
   visibility: hidden;
 }
 
+.search-bar .mat-mdc-form-field-flex {
+  height: 2.5rem;
+  align-items: center;
+}
+
+.search-bar .mat-mdc-form-field-infix,
+.input-bar .mat-mdc-form-field-infix {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar .mat-mdc-text-field-wrapper,
+.input-bar .mat-mdc-text-field-wrapper {
+  background-color: var(--background-input);
+}
+
+.search-bar .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label,
+.input-bar .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label {
+  top: calc(var(--mat-form-field-container-height, 40px) / 2);
+}
+
+.input-bar .mat-mdc-form-field-flex {
+  height: 2.8rem;
+  align-items: center;
+}
+
 /* Ancho del scroll */
 ::-webkit-scrollbar {
   width: 8px;
@@ -98,6 +127,7 @@ body {
   --color-header-text: #00458f;
   --background-body: #EEF3F9;
   --background-card: #FFFFFF;
+  --background-input: #EDF1F7;
   --background-action-button: #00458f;
   --color-action-button: #EEF3F9;
   --mat-button-text-label-text-color: #EEF3F9;
