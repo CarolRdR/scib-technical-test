@@ -3,7 +3,7 @@ import { inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, throwError } from 'rxjs';
-import { BACKEND_ERROR_MESSAGE_KEYS_MAP, ERROR_MESSAGE_KEYS } from '../constants/error-messages';
+import { BACKEND_ERROR_MESSAGE_KEYS_MAP, ERROR_MESSAGE_KEYS } from '../constants/errors/error-messages';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const snackBar = inject(MatSnackBar);

@@ -6,19 +6,15 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
-import * as XLSX from 'xlsx';
-import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/error-messages';
-import { CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
-import {
-  ensureSingleDataRow,
-  ensureXlsxFile,
-  ExcelValidationError
-} from '../../../../core/utils/validators/excel-file.validator';
+import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/errors/error-messages';
+import { Candidate } from '../../../../core/interfaces/candidate.interface';
+import { ensureXlsxFile, ExcelValidationError } from '../../../../core/utils/validators/excel-file.validator';
 import { DropFilesZoneComponent } from '../../../../shared/components/drop-files-zone/drop-files-zone';
 import { HeaderComponent } from '../../../../shared/components/header/header';
 import { MATERIAL_IMPORTS } from '../../../../shared/imports/material.imports';
 import { CandidateTableComponent } from '../../components/candidate-table/candidate-table.component';
 import { CandidateApiService } from '../../services/api/candidate-api.service';
+import { ExcelCandidateParserService } from '../../services/excel/excel-candidate-parser.service';
 import { CandidateStorageService } from '../../services/storage/candidate-storage.service';
 
 @Component({
@@ -45,6 +41,7 @@ export class UploadCandidateComponent {
   private readonly candidateApi = inject(CandidateApiService);
   private readonly candidateStorage = inject(CandidateStorageService);
   private readonly translate = inject(TranslateService);
+  private readonly excelParser = inject(ExcelCandidateParserService);
 
   public readonly uploadForm = this.fb.nonNullable.group({
     name: this.fb.nonNullable.control('', { validators: [Validators.required, Validators.maxLength(80)] }),
@@ -67,12 +64,10 @@ export class UploadCandidateComponent {
     }
 
     const file = ensureXlsxFile(this.uploadForm.controls.file.value);
-    let excelData: CandidateExcelData;
-    let normalizedFile = file;
+    let normalizedFile: File;
     try {
-      const rows = await this.extractExcelRows(file);
-      excelData = ensureSingleDataRow(rows);
-      normalizedFile = this.normalizeExcelFile(excelData, file);
+      const { normalizedFile: parsedFile } = await this.excelParser.parseCandidateFile(file);
+      normalizedFile = parsedFile;
     } catch (error) {
       this.presentError(error);
       return;
@@ -91,12 +86,7 @@ export class UploadCandidateComponent {
       );
       this.candidateStorage.addCandidate(candidate);
       this.uploadForm.reset({ name: '', surname: '', file: null });
-      const successMessage = this.translate.instant('UPLOAD_CANDIDATE.SNACKBAR_SUCCESS');
-      const closeLabel = this.translate.instant('COMMON.CLOSE');
-      this.snackBar.open(successMessage, closeLabel, {
-        duration: 3000,
-        panelClass: ['snackbar-success']
-      });
+      this.notifySuccess(candidate);
     } catch (error) {
       this.presentError(error);
     } finally {
@@ -117,73 +107,16 @@ export class UploadCandidateComponent {
     }
   }
 
-  private async extractExcelRows(file: File): Promise<CandidateExcelData[]> {
-    const buffer = await file.arrayBuffer();
-    const workbook = XLSX.read(buffer, { type: 'array' });
-    const [firstSheetName] = workbook.SheetNames;
-
-    if (!firstSheetName) {
-      throw new ExcelValidationError('El archivo no contiene hojas.');
-    }
-
-    const sheet = workbook.Sheets[firstSheetName];
-    const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' });
-
-    return rawRows.map((row) => this.mapRowToCandidateData(row));
-  }
-
-  private mapRowToCandidateData(row: Record<string, unknown>): CandidateExcelData {
-    const normalizedRow = Object.entries(row).reduce<Record<string, unknown>>((acc, [key, value]) => {
-      const normalizedKey = key
-        .toString()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, '')
-        .toLowerCase();
-      acc[normalizedKey] = value;
-      return acc;
-    }, {});
-
-    const seniorityValue = String(normalizedRow['seniority'] ?? '').toLowerCase().trim();
-    if (seniorityValue !== 'junior' && seniorityValue !== 'senior') {
-      throw new ExcelValidationError('El campo "Seniority" debe ser "junior" o "senior".');
-    }
-
-    const yearsRaw =
-      normalizedRow['years'] ??
-      normalizedRow['anosdeexperiencia'] ??
-      normalizedRow['anosexperiencia'] ??
-      normalizedRow['experiencia'] ??
-      normalizedRow['yearsofexperience'];
-    const years = Number(yearsRaw);
-    if (!Number.isFinite(years) || years < 0) {
-      throw new ExcelValidationError('El campo "Años de experiencia" debe ser un número válido.');
-    }
-
-    const availabilityRaw = normalizedRow['availability'] ?? normalizedRow['disponibilidad'];
-    if (availabilityRaw === undefined || availabilityRaw === null || availabilityRaw === '') {
-      throw new ExcelValidationError('La columna "Disponibilidad" es obligatoria.');
-    }
-
-    let availability: boolean;
-    if (typeof availabilityRaw === 'boolean') {
-      availability = availabilityRaw;
-    } else {
-      const normalizedAvailability = String(availabilityRaw).toLowerCase().trim();
-      if (['true', '1', 'si', 'sí', 'available', 'disponible', 'yes'].includes(normalizedAvailability)) {
-        availability = true;
-      } else if (['false', '0', 'no', 'notavailable', 'no disponible'].includes(normalizedAvailability)) {
-        availability = false;
-      } else {
-        throw new ExcelValidationError('La columna "Disponibilidad" debe ser booleana.');
-      }
-    }
-
-    return {
-      seniority: seniorityValue as CandidateExcelData['seniority'],
-      years,
-      availability
-    };
+  private notifySuccess(candidate: Candidate): void {
+    const successMessage = this.translate.instant('UPLOAD_CANDIDATE.SNACKBAR_SUCCESS', {
+      name: candidate.name,
+      surname: candidate.surname
+    });
+    const closeLabel = this.translate.instant('COMMON.CLOSE');
+    this.snackBar.open(successMessage, closeLabel, {
+      duration: 3000,
+      panelClass: ['snackbar-success']
+    });
   }
 
   private presentError(error: unknown): void {
@@ -199,26 +132,4 @@ export class UploadCandidateComponent {
     this.snackBar.open(message, closeLabel, { duration: 4000, panelClass: ['snackbar-error'] });
   }
 
-  private normalizeExcelFile(excelData: CandidateExcelData, originalFile: File): File {
-    const worksheet = XLSX.utils.json_to_sheet(
-      [
-        {
-          seniority: excelData.seniority,
-          years: excelData.years,
-          availability: excelData.availability
-        }
-      ],
-      { header: ['seniority', 'years', 'availability'] }
-    );
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'candidate');
-    const normalizedBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' }) as ArrayBuffer;
-
-    return new File([normalizedBuffer], originalFile.name, {
-      type:
-        originalFile.type || 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      lastModified: originalFile.lastModified
-    });
-  }
 }
