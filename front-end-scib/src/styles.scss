@@ -45,14 +45,27 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.snackbar-success {
-  background-color: #1b5e20;
-  color: #fff;
-}
+.mat-mdc-snack-bar-container {
+  &.snackbar-success {
+    .mdc-snackbar__surface {
+      background-color: #1b5e20;
+      color: #fff;
+    }
+  }
 
-.snackbar-error {
-  background-color: #b71c1c;
-  color: #fff;
+  &.snackbar-warning {
+    .mdc-snackbar__surface {
+      background-color: #f9a825;
+      color: #000;
+    }
+  }
+
+  &.snackbar-error {
+    .mdc-snackbar__surface {
+      background-color: #b71c1c;
+      color: #fff;
+    }
+  }
 }
 
 .mat-sort-header-arrow {

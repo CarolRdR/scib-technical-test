@@ -43,7 +43,7 @@ describe('table utils', () => {
       const sorted = sortEntities(
         extended,
         sort,
-        (item, _active) => item.meta?.keyword ?? ''
+        (item, _active) => item.meta?.keyword ? item.meta?.keyword : ''
       );
 
       expect(sorted[0].meta?.keyword).toBe('alpha');
@@ -64,7 +64,7 @@ describe('table utils', () => {
     });
 
     it('supports custom projectors to match derived text', () => {
-      const projector = (item: MockEntity) => item.meta?.keyword ?? '';
+      const projector = (item: MockEntity) => item.meta?.keyword ? item.meta?.keyword : '';
       const entity: MockEntity = { name: 'Test', years: 1, meta: { keyword: 'Disponible' } };
 
       expect(entityContainsTerm(entity, 'disponible', projector)).toBeTrue();

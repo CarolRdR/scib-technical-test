@@ -8,6 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/errors/error-messages';
 import { Candidate, CandidateUploadPayload, UploadCandidateForm } from '../../../../core/interfaces/candidate.interface';
+import { ExcelCandidateParserService } from '../../../../core/services/excel/excel-candidate-parser.service';
 import { ensureXlsxFile, ExcelValidationError } from '../../../../core/utils/validators/excel-file.validator';
 import { DropFilesZoneComponent } from '../../../../shared/components/drop-files-zone/drop-files-zone';
 import { HeaderComponent } from '../../../../shared/components/header/header';
@@ -15,7 +16,6 @@ import { MATERIAL_IMPORTS } from '../../../../shared/imports/material.imports';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { CandidateTableComponent } from '../../components/candidate-table/candidate-table.component';
 import { CandidateApiService } from '../../services/api/candidate-api.service';
-import { ExcelCandidateParserService } from '../../services/excel/excel-candidate-parser.service';
 import { CandidateStorageService } from '../../services/storage/candidate-storage.service';
 
 @Component({

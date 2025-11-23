@@ -30,8 +30,8 @@ export class HeaderComponent {
     if (current) {
       return current;
     }
-    const browserLang = this.translate.getBrowserLang() ?? 'es';
-    return browserLang.toLowerCase().startsWith('en') ? 'en' : 'es';
+    const browserLang = this.translate.getBrowserLang() ? this.translate.getBrowserLang() : 'es';
+    return browserLang && browserLang.toLowerCase().startsWith('en') ? 'en' : 'es';
   }
 
 }

@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import * as XLSX from 'xlsx';
-import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/errors/error-messages';
-import { ExcelValidationError } from '../../../../core/utils/validators/excel-file.validator';
+import { ERROR_MESSAGE_KEYS } from '../../constants/errors/error-messages';
+import { ExcelValidationError } from '../../utils/validators/excel-file.validator';
 import { ExcelCandidateParserService } from './excel-candidate-parser.service';
+
 
 describe('ExcelCandidateParserService', () => {
   let service: ExcelCandidateParserService;

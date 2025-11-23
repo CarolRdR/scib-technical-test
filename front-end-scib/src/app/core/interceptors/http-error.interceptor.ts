@@ -12,11 +12,12 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: unknown) => {
       if (error instanceof HttpErrorResponse) {
-        const backendMessage =
-          (typeof error.error === 'object' ? error.error?.message : error.error) ?? '';
+        const backendMessage = (typeof error.error === 'object' ? error.error?.message : error.error) ?? '';
         const translationKey =
           BACKEND_ERROR_MESSAGE_KEYS_MAP[String(backendMessage)] ?? ERROR_MESSAGE_KEYS.general.unknown;
-        const friendlyMessage = translate.instant(translationKey);
+        const friendlyMessage = backendMessage
+          ? backendMessage
+          : translate.instant(translationKey);
         const closeLabel = translate.instant('COMMON.CLOSE');
         snackBar.open(friendlyMessage, closeLabel, {
           duration: 4000,

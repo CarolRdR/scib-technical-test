@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as XLSX from 'xlsx';
-import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/errors/error-messages';
-import { EXCEL_ALIAS } from '../../../../core/constants/excel/excel-alias.constants';
-import { CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
-import { ExcelCandidateParseResult } from '../../../../core/interfaces/excel-candidate-parse.interface';
-import {
-  findAvailabilityRawValue,
-  findYearsValue,
-  isFalseAvailabilityToken,
-  isTrueAvailabilityToken,
-  normalizeAliasToken
-} from '../../../../core/utils/excel/excel-alias.utils';
-import { ensureSingleDataRow, ExcelValidationError } from '../../../../core/utils/validators/excel-file.validator';
+import { ERROR_MESSAGE_KEYS } from '../../constants/errors/error-messages';
+import { EXCEL_ALIAS } from '../../constants/excel/excel-alias.constants';
+import { CandidateExcelData } from '../../interfaces/candidate.interface';
+import { ExcelCandidateParseResult } from '../../interfaces/excel-candidate-parse.interface';
+import { findAvailabilityRawValue, findYearsValue, isFalseAvailabilityToken, isTrueAvailabilityToken, normalizeAliasToken } from '../../utils/excel/excel-alias.utils';
+import { ensureSingleDataRow, ExcelValidationError } from '../../utils/validators/excel-file.validator';
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +63,7 @@ export class ExcelCandidateParserService {
 
   // Ensures seniority column is present and contains the allowed values.
   private extractSeniority(row: Record<string, unknown>): CandidateExcelData['seniority'] {
-    const seniorityValue = String(row['seniority'] ?? '').toLowerCase().trim();
+    const seniorityValue = String(row['seniority'] ? row['seniority'] : '').toLowerCase().trim();
     if (seniorityValue !== 'junior' && seniorityValue !== 'senior') {
       throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.seniority);
     }

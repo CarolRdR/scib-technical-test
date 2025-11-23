@@ -3,10 +3,10 @@ import { ANIMATION_MODULE_TYPE } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { Candidate } from '../../../../core/interfaces/candidate.interface';
-import { CandidateApiService } from '../../services/api/candidate-api.service';
-import { ExcelCandidateParserService } from '../../services/excel/excel-candidate-parser.service';
-import { CandidateStorageService } from '../../services/storage/candidate-storage.service';
+import { ExcelCandidateParserService } from '../../../../core/services/excel/excel-candidate-parser.service';
 import { NotificationService } from '../../../../shared/services/notification.service';
+import { CandidateApiService } from '../../services/api/candidate-api.service';
+import { CandidateStorageService } from '../../services/storage/candidate-storage.service';
 import { UploadCandidateComponent } from './upload-candidate.component';
 
 class CandidateStorageMock {
