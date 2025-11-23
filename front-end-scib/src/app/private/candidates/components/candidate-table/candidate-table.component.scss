@@ -27,8 +27,14 @@
   justify-content: center;
 }
 
-.body {
+.table-body{
   overflow:auto;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
 }
 
 .availability-chip {

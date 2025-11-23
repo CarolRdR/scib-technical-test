@@ -1,6 +1,6 @@
 <mat-card class="candidate-table-card">
 
-  <div class="body">
+  <div class="table-body">
     <app-search-bar
       [label]="'CANDIDATE_TABLE.SEARCH' | translate"
       [placeholder]="'CANDIDATE_TABLE.SEARCH' | translate"
@@ -10,12 +10,14 @@
       (clear)="clearSearch()"
     />
     @if (isLoading()) {
-    <mat-progress-spinner
-      diameter="32"
-      mode="indeterminate"
-      role="status"
-      [attr.aria-label]="'CANDIDATE_TABLE.LOADING' | translate"
-    ></mat-progress-spinner>
+    <div class="loading-spinner">
+      <mat-progress-spinner
+        diameter="32"
+        mode="indeterminate"
+        role="status"
+        [attr.aria-label]="'CANDIDATE_TABLE.LOADING' | translate"
+      ></mat-progress-spinner>
+    </div>
     }
     @if (hasCandidates()) {
       <div class="candidate-table-wrapper">
