@@ -37,6 +37,8 @@
 }
 
 .file-name {
+  display: flex;
+  align-items: center;
   font-weight: 600;
   color: #263238;
 }

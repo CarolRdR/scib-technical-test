@@ -38,7 +38,6 @@ body {
   // Set a default background, font and text colors for the application using
   // Angular Material's system-level CSS variables. Learn more about these
   // variables at https://material.angular.dev/guide/system-variables
-  // background-color: var(--mat-sys-secondary-container);
   background-color: var(--background-body);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
@@ -50,6 +49,7 @@ body {
 html, body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -65,7 +65,16 @@ body {
   color: #fff;
 }
 
+.mat-sort-header-arrow {
+  visibility: hidden;
+}
+
 :root {
+  --background-header: #EEF3F9;
+  --color-header-text: #00458f;
   --background-body: #EEF3F9;
   --background-card: #FFFFFF;
+  --background-action-button: #00458f;
+  --color-action-button: #EEF3F9;
+  --mat-button-text-label-text-color: #EEF3F9;
 }

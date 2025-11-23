@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -39,7 +39,7 @@ import { CandidateStorageService } from '../../services/storage/candidate-storag
   styleUrl: './upload-candidate.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UploadCandidateComponent implements OnInit {
+export class UploadCandidateComponent {
   private readonly fb = inject(FormBuilder);
   private readonly snackBar = inject(MatSnackBar);
   private readonly candidateApi = inject(CandidateApiService);

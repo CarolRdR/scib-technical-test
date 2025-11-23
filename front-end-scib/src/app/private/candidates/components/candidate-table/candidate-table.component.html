@@ -1,15 +1,14 @@
 <mat-card class="candidate-table-card">
 
   <div class="body">
-    <mat-form-field appearance="outline">
-      <mat-label>{{"CANDIDATE_TABLE.SEARCH" | translate}}</mat-label>
-      <input matInput [(ngModel)]="searchTerm" (input)="applyFilter($any($event.target).value)" placeholder="Buscar por nombre">
-      @if (searchTerm) {
-      <button mat-icon-button matSuffix (click)="clearSearch()">
-        <mat-icon>close</mat-icon>
-      </button>
-      }
-    </mat-form-field>
+    <app-search-bar
+      [label]="'CANDIDATE_TABLE.SEARCH' | translate"
+      [placeholder]="'CANDIDATE_TABLE.SEARCH' | translate"
+      [value]="searchTerm"
+      [clearButtonAriaLabel]="'CANDIDATE_TABLE.CLEAR_SEARCH' | translate"
+      (valueChange)="applyFilter($event)"
+      (clear)="clearSearch()"
+    />
     @if (isLoading()) {
     <mat-progress-spinner
       diameter="32"
@@ -19,41 +18,50 @@
     ></mat-progress-spinner>
     }
     @if (hasCandidates()) {
-      <table mat-table [dataSource]="dataRows" class="candidate-table" aria-label="Candidate list">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>{{ 'CANDIDATE_TABLE.COLUMNS.NAME' | translate }}</th>
-          <td mat-cell *matCellDef="let candidate">{{ candidate.name }}</td>
-        </ng-container>
+      <div class="candidate-table-wrapper">
+        <table
+          mat-table
+          [dataSource]="dataRows()"
+          matSort
+          (matSortChange)="onSortChange($event)"
+          class="candidate-table"
+          aria-label="Candidate list"
+        >
+          <ng-container matColumnDef="name" sticky>
+            <th mat-header-cell mat-sort-header *matHeaderCellDef sortActionDescription="Sort by name">{{ 'CANDIDATE_TABLE.COLUMNS.NAME' | translate }}</th>
+            <td mat-cell *matCellDef="let candidate">{{ candidate.name }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="surname">
-          <th mat-header-cell *matHeaderCellDef>{{ 'CANDIDATE_TABLE.COLUMNS.SURNAME' | translate }}</th>
-          <td mat-cell *matCellDef="let candidate">{{ candidate.surname }}</td>
-        </ng-container>
+          <ng-container matColumnDef="surname">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef sortActionDescription="Sort by surname">{{ 'CANDIDATE_TABLE.COLUMNS.SURNAME' | translate }}</th>
+            <td mat-cell *matCellDef="let candidate">{{ candidate.surname }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="seniority">
-          <th mat-header-cell *matHeaderCellDef>{{ 'CANDIDATE_TABLE.COLUMNS.SENIORITY' | translate }}</th>
-          <td mat-cell *matCellDef="let candidate">{{ candidate.seniority | titlecase }}</td>
-        </ng-container>
+          <ng-container matColumnDef="seniority">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef sortActionDescription="Sort by seniority">{{ 'CANDIDATE_TABLE.COLUMNS.SENIORITY' | translate }}</th>
+            <td mat-cell *matCellDef="let candidate">{{ candidate.seniority | titlecase }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="years">
-          <th mat-header-cell *matHeaderCellDef>{{ 'CANDIDATE_TABLE.COLUMNS.YEARS' | translate }}</th>
-          <td mat-cell *matCellDef="let candidate">{{ candidate.years }}</td>
-        </ng-container>
+          <ng-container matColumnDef="years">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef sortActionDescription="Sort by years">{{ 'CANDIDATE_TABLE.COLUMNS.YEARS' | translate }}</th>
+            <td mat-cell *matCellDef="let candidate">{{ candidate.years }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="availability">
-          <th mat-header-cell *matHeaderCellDef>{{ 'CANDIDATE_TABLE.COLUMNS.AVAILABILITY' | translate }}</th>
-          <td mat-cell *matCellDef="let candidate">
-            {{
-              candidate.availability
-                ? ('CANDIDATE_TABLE.AVAILABILITY.TRUE' | translate)
-                : ('CANDIDATE_TABLE.AVAILABILITY.FALSE' | translate)
-            }}
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="availability">
+            <th mat-header-cell mat-sort-header *matHeaderCellDef sortActionDescription="Sort by availability">{{ 'CANDIDATE_TABLE.COLUMNS.AVAILABILITY' | translate }}</th>
+            <td mat-cell *matCellDef="let candidate">
+              {{
+                candidate.availability
+                  ? ('CANDIDATE_TABLE.AVAILABILITY.TRUE' | translate)
+                  : ('CANDIDATE_TABLE.AVAILABILITY.FALSE' | translate)
+              }}
+            </td>
+          </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-      </table>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
     } @else {
       <div class="empty-state" aria-live="polite">
         @if (isLoading()) {

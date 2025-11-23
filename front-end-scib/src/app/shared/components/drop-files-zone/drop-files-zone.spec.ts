@@ -51,4 +51,13 @@ describe('DropFilesZoneComponent', () => {
     expect(component.control.touched).toBeTrue();
     expect(component.control.dirty).toBeTrue();
   });
+
+  it('should clear the selected file when clicking remove button handler', () => {
+    const file = new File(['content'], 'candidate.xlsx');
+    component['setFile'](file);
+    (component as any).onClearSelectedFile(new Event('click'));
+
+    expect(component.control.value).toBeNull();
+    expect(component.control.touched).toBeTrue();
+  });
 });

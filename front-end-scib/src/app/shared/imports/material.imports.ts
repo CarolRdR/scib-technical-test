@@ -5,17 +5,19 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 export const MATERIAL_IMPORTS = [
   MatButtonModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatTableModule,
-  MatIconModule,
-  MatProgressSpinnerModule,
-  MatToolbarModule,
   MatCardModule,
+  MatFormFieldModule,
   MatGridListModule,
+  MatIconModule,
+  MatInputModule,
+  MatProgressSpinnerModule,
+  MatSortModule,
+  MatTableModule,
+  MatToolbarModule,
 ];

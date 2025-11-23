@@ -48,11 +48,11 @@
           <app-drop-files-zone [control]="uploadForm.controls.file" />
 
           <button
-            mat-flat-button
-            color="primary"
+            matButton
             type="submit"
             [disabled]="isSubmitting()"
             [attr.aria-busy]="isSubmitting()"
+            class="button-send"
           >
             {{
               isSubmitting()

@@ -20,9 +20,18 @@
     </p>
 
     @if (hasSelectedFile) {
-      <p class="file-name" aria-live="polite">
-        {{ 'DROP_FILES_ZONE.SELECTED' | translate:{ FILE: selectedFileName } }}
-      </p>
+      <div class="file-name" aria-live="polite">
+        <p>{{ 'DROP_FILES_ZONE.SELECTED' | translate:{ FILE: selectedFileName } }}</p>
+        <button
+          matIconButton
+          color="warn"
+          type="button"
+          (click)="onClearSelectedFile($event)"
+          [attr.aria-label]="'DROP_FILES_ZONE.REMOVE' | translate"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
     }
 
     @if (showRequiredError) {

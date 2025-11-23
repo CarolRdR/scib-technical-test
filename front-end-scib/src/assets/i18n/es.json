@@ -37,6 +37,7 @@
     "TITLE": "Listado de candidatos",
     "EMPTY": "Aún no se han cargado candidatos.",
     "SEARCH": "Buscar candidato...",
+    "CLEAR_SEARCH": "Limpiar busqueda",
     "LOADING": "Estamos cargando la información...",
     "COLUMNS": {
       "NAME": "Nombre",
@@ -55,7 +56,8 @@
     "TITLE": "Arrastra y suelta el archivo aquí",
     "SUBTITLE": "o haz clic para seleccionarlo",
     "SELECTED": "Archivo seleccionado: {{FILE}}",
-    "ERROR_REQUIRED": "Adjunta un archivo."
+    "ERROR_REQUIRED": "Adjunta un archivo.",
+    "REMOVE": "Eliminar archivo"
   },
   "ERRORS": {
     "UPLOAD_DEFAULT": "No se pudo cargar el candidato. Intenta nuevamente.",

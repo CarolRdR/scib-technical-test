@@ -37,6 +37,7 @@
     "TITLE": "Candidate list",
     "EMPTY": "No candidates have been uploaded yet.",
     "SEARCH": "Search candidate...",
+    "CLEAR_SEARCH": "Clear search",
     "LOADING": "Loading candidate information...",
     "COLUMNS": {
       "NAME": "First name",
@@ -55,7 +56,8 @@
     "TITLE": "Drag and drop the file here",
     "SUBTITLE": "or click to select it",
     "SELECTED": "Selected file: {{FILE}}",
-    "ERROR_REQUIRED": "Please attach a file."
+    "ERROR_REQUIRED": "Please attach a file.",
+    "REMOVE": "Remove file"
   },
   "ERRORS": {
     "UPLOAD_DEFAULT": "We couldn't upload the candidate. Please try again.",

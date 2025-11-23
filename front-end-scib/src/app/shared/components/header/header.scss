@@ -4,6 +4,8 @@
   align-items: center;
   text-align: center;
   gap: 1.5rem;
+  padding: 2rem;
+  background-color: var(--mat-sys-primary-container);
 
   &__title {
       font-size: 3rem;
@@ -12,14 +14,14 @@
       color: var(--foreground, #1f1f1f);
       margin:0;
       line-height: 1;
-      color: color-mix(in srgb, var(--foreground, #343C43) 100%, transparent);
+      color: color-mix(in srgb, var(--foreground, #00458f) 100%, transparent);
     }
 
     &__subtitle {
       margin: 0;
       max-width: 42rem;
       font-size: 1.125rem;
-      color: color-mix(in srgb, var(--foreground, #1f1f1f) 60%, transparent);
+      color: color-mix(in srgb, var(--foreground, #00458f) 60%, transparent);
     }
 
 }
