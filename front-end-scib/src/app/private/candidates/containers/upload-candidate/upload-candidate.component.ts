@@ -2,8 +2,16 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/errors/error-messages';
@@ -12,7 +20,6 @@ import { ExcelCandidateParserService } from '../../../../core/services/excel/exc
 import { ensureXlsxFile, ExcelValidationError } from '../../../../core/utils/validators/excel-file.validator';
 import { DropFilesZoneComponent } from '../../../../shared/components/drop-files-zone/drop-files-zone';
 import { HeaderComponent } from '../../../../shared/components/header/header';
-import { MATERIAL_IMPORTS } from '../../../../shared/imports/material.imports';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { CandidateTableComponent } from '../../components/candidate-table/candidate-table.component';
 import { CandidateApiService } from '../../services/api/candidate-api.service';
@@ -26,7 +33,14 @@ import { CandidateStorageService } from '../../services/storage/candidate-storag
     ReactiveFormsModule,
     MatProgressBarModule,
     MatSnackBarModule,
-    ...MATERIAL_IMPORTS,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatGridListModule,
+    MatIconModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
     CandidateTableComponent,
     DropFilesZoneComponent,
     TranslateModule,
