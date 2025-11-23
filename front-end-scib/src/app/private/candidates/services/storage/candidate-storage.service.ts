@@ -13,7 +13,6 @@ export class CandidateStorageService {
 
   public setCandidates(candidates: Candidate[]): void {
     this.candidatesSignal.set(candidates);
-    this.loadingSignal.set(false);
   }
 
   public setLoading(isLoading: boolean): void {
@@ -22,11 +21,9 @@ export class CandidateStorageService {
 
   public addCandidate(candidate: Candidate): void {
     this.candidatesSignal.update((current) => [...current, candidate]);
-    this.setLoading(false);
   }
 
   public reset(): void {
     this.candidatesSignal.set([]);
-    this.setLoading(false);
   }
 }

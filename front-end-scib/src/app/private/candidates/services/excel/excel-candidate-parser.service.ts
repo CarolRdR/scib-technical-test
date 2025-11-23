@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
 import * as XLSX from 'xlsx';
-import { FALSE_AVAILABILITY_VALUES, TRUE_AVAILABILITY_VALUES, YEARS_KEYS } from '../../../../core/constants/excel/excel-candidate.constants';
 import { ERROR_MESSAGE_KEYS } from '../../../../core/constants/errors/error-messages';
 import { CandidateExcelData } from '../../../../core/interfaces/candidate.interface';
 import { ExcelCandidateParseResult } from '../../../../core/interfaces/excel-candidate-parse.interface';
+import {
+  findAvailabilityRawValue,
+  findYearsValue,
+  isFalseAvailabilityToken,
+  isTrueAvailabilityToken,
+  normalizeAliasToken
+} from '../../../../core/utils/excel/excel-alias.utils';
 import { ensureSingleDataRow, ExcelValidationError } from '../../../../core/utils/validators/excel-file.validator';
 
 @Injectable({
@@ -75,7 +81,7 @@ export class ExcelCandidateParserService {
 
   // Attempts to parse "years" from any of its known aliases and validates numeric range.
   private extractYears(row: Record<string, unknown>): number {
-    const yearsRaw = YEARS_KEYS.map((key) => row[key]).find((value) => value !== undefined);
+    const yearsRaw = findYearsValue(row);
     const years = Number(yearsRaw);
     if (!Number.isFinite(years) || years < 0) {
       throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.years);
@@ -85,7 +91,7 @@ export class ExcelCandidateParserService {
 
   // Parses availability supporting different languages/boolean representations.
   private extractAvailability(row: Record<string, unknown>): boolean {
-    const availabilityRaw = row['availability'] ?? row['disponibilidad'];
+    const availabilityRaw = findAvailabilityRawValue(row);
     if (availabilityRaw === undefined || availabilityRaw === null || availabilityRaw === '') {
       throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.availabilityRequired);
     }
@@ -94,11 +100,11 @@ export class ExcelCandidateParserService {
       return availabilityRaw;
     }
 
-    const normalizedAvailability = String(availabilityRaw).toLowerCase().trim();
-    if (TRUE_AVAILABILITY_VALUES.includes(normalizedAvailability)) {
+    const normalizedAvailability = normalizeAliasToken(availabilityRaw);
+    if (isTrueAvailabilityToken(normalizedAvailability)) {
       return true;
     }
-    if (FALSE_AVAILABILITY_VALUES.includes(normalizedAvailability)) {
+    if (isFalseAvailabilityToken(normalizedAvailability)) {
       return false;
     }
     throw new ExcelValidationError(ERROR_MESSAGE_KEYS.upload.availability);

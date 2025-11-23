@@ -19,29 +19,29 @@ describe('CandidateStorageService', () => {
     service = TestBed.inject(CandidateStorageService);
   });
 
-  it('should add candidates and reset loading state', () => {
+  it('should add candidates without toggling loading state', () => {
     service.setLoading(true);
     service.addCandidate(mockCandidate);
 
     expect(service.candidates()).toEqual([mockCandidate]);
-    expect(service.isLoading()).toBeFalse();
+    expect(service.isLoading()).toBeTrue();
   });
 
-  it('should replace candidates list via setCandidates', () => {
+  it('should replace candidates list via setCandidates without toggling loading state', () => {
     service.setLoading(true);
     service.setCandidates([mockCandidate]);
 
     expect(service.candidates()).toEqual([mockCandidate]);
-    expect(service.isLoading()).toBeFalse();
+    expect(service.isLoading()).toBeTrue();
   });
 
-  it('should reset collection and loading state', () => {
+  it('should reset collection without toggling loading state', () => {
     service.addCandidate(mockCandidate);
     service.setLoading(true);
 
     service.reset();
 
     expect(service.candidates()).toEqual([]);
-    expect(service.isLoading()).toBeFalse();
+    expect(service.isLoading()).toBeTrue();
   });
 });

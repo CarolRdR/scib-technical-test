@@ -33,7 +33,7 @@ Aplicacion Angular (v20) que permite cargar candidatos mediante un formulario re
 ## Flujo de trabajo recomendado
 
 1. **Levantar backend** en `http://localhost:3000` (NestJS). El frontend realiza `GET /candidates` al cargar para poblar la tabla, por lo que la API debe estar disponible.
-2. **Iniciar frontend** con `npm start`.
+2. **Iniciar frontend** con `npm start` o `ng serve`.
 3. Completar el formulario, arrastrar o seleccionar un Excel valido y enviar.
 4. Verificar que el candidato aparece en la tabla junto a los datos enriquecidos y que persiste tras refrescar gracias al backend.
 
@@ -41,7 +41,9 @@ Aplicacion Angular (v20) que permite cargar candidatos mediante un formulario re
 
 ```
 src/app/
-  core/            # interfaces, validadores, interceptores
+  core/                                        # interfaces, validadores, interceptores
+    constants/excel/excel-alias.constants.ts   # fuente de verdad de alias/columnas para Excel
+    utils/excel/excel-alias.utils.ts           # helpers puros (buscar alias, normalizar tokens, etc.)
   private/
     candidates/
       containers/upload-candidate
@@ -68,6 +70,9 @@ Se incluye cobertura para:
 
 ## Notas
 
+- Si necesitas agregar nuevos alias/columnas válidas para los Excels, actualiza `src/app/core/constants/excel/excel-alias.constants.ts` y los helpers/ tests en `src/app/core/utils/excel`. Esos archivos son la fuente de verdad que consume el parser (`ExcelCandidateParserService`), por lo que no hace falta tocar la clase cada vez que se habilita un nuevo alias.
 - El backend debe exponer `POST /candidates/upload` aceptando `multipart/form-data`.
 - Las rutas del entorno se configuran en `src/environments`.
 - El proyecto utiliza un interceptor para mapear mensajes del backend a errores amigables para el usuario.
+- Convención: los **containers** (por ejemplo `upload-candidate` en `private/candidates/containers`) manejan servicios/estado y los **components** (como `candidate-table` o `drop-files-zone`) se enfocan en la presentación. Usa esta separación al agregar nuevas piezas.
+- Si más adelante agregan otros patrones relevantes (por ejemplo, la convención “containers vs components” o cómo funcionan los signals en `CandidateStorageService`), se podría añadir una sección dedicada a “Arquitectura/Convenciones” para documentarlo.

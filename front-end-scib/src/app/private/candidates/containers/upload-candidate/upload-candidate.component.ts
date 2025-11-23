@@ -78,11 +78,7 @@ export class UploadCandidateComponent {
       return;
     }
 
-    try {
-      await this.withSubmission(() => this.persistCandidate(payload));
-    } catch (error) {
-      this.presentError(error);
-    }
+    await this.withSubmission(() => this.persistCandidate(payload));
   }
 
   // Fetches existing candidates to hydrate storage/table.
@@ -145,9 +141,13 @@ export class UploadCandidateComponent {
     this.candidateStorage.setLoading(true);
     try {
       return await operation();
+    } catch (error) {
+      this.presentError(error);
+      throw error;
     } finally {
       this.isSubmitting.set(false);
       this.candidateStorage.setLoading(false);
     }
   }
+
 }
