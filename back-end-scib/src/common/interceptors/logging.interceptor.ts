@@ -13,8 +13,8 @@ export class LoggingInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const req = context.switchToHttp().getRequest<Request>();
-    const method = req?.method ?? 'UNKNOWN';
-    const url = req?.url ?? 'unknown';
+    const method = req?.method ? req?.method : 'UNKNOWN';
+    const url = req?.url ? req?.url : 'unknown';
     const started = Date.now();
 
     return next.handle().pipe(
