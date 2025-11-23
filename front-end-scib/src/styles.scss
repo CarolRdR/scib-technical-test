@@ -1,0 +1,145 @@
+
+@use '@angular/material' as mat;
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+      theme-type: light,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+body {
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--background-body);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  margin: 0;
+}
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.mat-mdc-snack-bar-container {
+  &.snackbar-success {
+    .mdc-snackbar__surface {
+      background-color: #1b5e20;
+      color: #fff;
+    }
+  }
+
+  &.snackbar-warning {
+    .mdc-snackbar__surface {
+      background-color: #f9a825;
+      color: #000;
+    }
+  }
+
+  &.snackbar-error {
+    .mdc-snackbar__surface {
+      background-color: #b71c1c;
+      color: #fff;
+    }
+  }
+}
+
+.mat-sort-header-arrow {
+  visibility: hidden;
+}
+
+.search-bar .mat-mdc-form-field-flex {
+  height: 2.5rem;
+  align-items: center;
+}
+
+.search-bar .mat-mdc-form-field-infix,
+.input-bar .mat-mdc-form-field-infix{
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.search-bar .mat-mdc-text-field-wrapper,
+.input-bar .mat-mdc-text-field-wrapper {
+  background-color: var(--background-input);
+}
+
+.search-bar .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label,
+.input-bar .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-floating-label {
+  top: calc(var(--mat-form-field-container-height, 40px) / 2);
+}
+
+.input-bar .mat-mdc-form-field-flex {
+  height: 2.8rem;
+  align-items: center;
+}
+
+.language-selector .mat-mdc-form-field-flex {
+  height: 2.4rem;
+  align-items: center;
+}
+
+.language-selector .mat-mdc-text-field-wrapper {
+  height: 2rem;
+}
+
+/* Width scroll */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+/* Fondo del scrollbar */
+::-webkit-scrollbar-track {
+  background: #EEF3F9;
+  border-radius: 4px;
+}
+
+/* Thumb */
+::-webkit-scrollbar-thumb {
+  background: #d8dbde;
+  border-radius: 4px;
+}
+
+/* Hover */
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--card-foreground));
+}
+
+:root {
+  --background-header: #EEF3F9;
+  --color-header-text: #00458f;
+  --background-body: #EEF3F9;
+  --background-card: #FFFFFF;
+  --background-input: #EDF1F7;
+  --background-action-button: #00458f;
+  --color-action-button: #EEF3F9;
+  --mat-button-text-label-text-color: #EEF3F9;
+}

@@ -1,0 +1,41 @@
+<div
+  class="upload-dropzone"
+  [class.upload-dropzone--hover]="isHovering"
+  (click)="onClickDropzone()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+  role="button"
+  tabindex="0"
+  [attr.aria-label]="'DROP_FILES_ZONE.ARIA_LABEL' | translate"
+>
+  <input #fileInput type="file" class="upload-input" (change)="onFileSelected($event)" accept=".xlsx" />
+
+  <div class="upload-dropzone-content">
+    <mat-icon>cloud_upload</mat-icon>
+
+    <p>
+      {{ 'DROP_FILES_ZONE.TITLE' | translate }}<br />
+      <span>{{ 'DROP_FILES_ZONE.SUBTITLE' | translate }}</span>
+    </p>
+
+    @if (hasSelectedFile) {
+      <div class="file-name" aria-live="polite">
+        <p>{{ 'DROP_FILES_ZONE.SELECTED' | translate:{ FILE: selectedFileName } }}</p>
+        <button
+          matIconButton
+          color="warn"
+          type="button"
+          (click)="onClearSelectedFile($event)"
+          [attr.aria-label]="'DROP_FILES_ZONE.REMOVE' | translate"
+        >
+          <mat-icon class="delete-file">cancel</mat-icon>
+        </button>
+      </div>
+    }
+
+    @if (showRequiredError) {
+      <p class="dropzone-error" role="alert" aria-live="assertive">{{ 'DROP_FILES_ZONE.ERROR_REQUIRED' | translate }}</p>
+    }
+  </div>
+</div>

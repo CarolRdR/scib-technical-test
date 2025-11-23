@@ -1,0 +1,21 @@
+<mat-form-field appearance="outline" class="search-bar">
+  <mat-label>{{ label }}</mat-label>
+  <input
+    matInput
+    type="text"
+    [value]="value"
+    (input)="onInput($event)"
+    [placeholder]="placeholder"
+  />
+  @if (value) {
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="onClear()"
+      [attr.aria-label]="clearButtonAriaLabel"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+</mat-form-field>

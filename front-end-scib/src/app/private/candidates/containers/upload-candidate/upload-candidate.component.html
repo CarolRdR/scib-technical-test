@@ -1,0 +1,80 @@
+
+<div class="header-layout">
+  <app-header />
+</div>
+
+<div class="candidates-layout">
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-header__title">{{ 'UPLOAD_CANDIDATE.HEADER.TITLE' | translate }}</h2>
+      <p class="section-header__subtitle">{{ 'UPLOAD_CANDIDATE.HEADER.SUBTITLE' | translate }}</p>
+    </div>
+      <mat-card class="upload-card">
+        <form [formGroup]="uploadForm" (ngSubmit)="onSubmit()" class="upload-form">
+          <div class="upload-form__header">
+            <h2 class="upload-form__header-title">{{ 'UPLOAD_CANDIDATE.TITLE' | translate }}</h2>
+            <p class="upload-form__header-subtitle">{{ 'UPLOAD_CANDIDATE.SUBTITLE' | translate }}</p>
+          </div>
+          <mat-form-field appearance="outline" class="input-bar">
+            <mat-label>{{ 'UPLOAD_CANDIDATE.FIELDS.NAME_LABEL' | translate }}</mat-label>
+            <input
+              matInput
+              formControlName="name"
+              [placeholder]="'UPLOAD_CANDIDATE.FIELDS.NAME_PLACEHOLDER' | translate"
+              [attr.aria-describedby]="uploadForm.controls.name.invalid ? 'name-error' : null"
+            />
+            @if (uploadForm.controls.name.hasError('required')) {
+              <mat-error id="name-error" role="alert">{{ 'UPLOAD_CANDIDATE.FIELDS.NAME_REQUIRED' | translate }}</mat-error>
+            }
+            @if (uploadForm.controls.name.hasError('maxlength')) {
+              <mat-error id="name-error" role="alert">{{ 'UPLOAD_CANDIDATE.FIELDS.NAME_MAX' | translate }}</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="input-bar">
+            <mat-label>{{ 'UPLOAD_CANDIDATE.FIELDS.SURNAME_LABEL' | translate }}</mat-label>
+            <input
+              matInput
+              formControlName="surname"
+              [placeholder]="'UPLOAD_CANDIDATE.FIELDS.SURNAME_PLACEHOLDER' | translate"
+              [attr.aria-describedby]="uploadForm.controls.surname.invalid ? 'surname-error' : null"
+            />
+            @if (uploadForm.controls.surname.hasError('required')) {
+              <mat-error id="surname-error" role="alert">{{ 'UPLOAD_CANDIDATE.FIELDS.SURNAME_REQUIRED' | translate }}</mat-error>
+            }
+            @if (uploadForm.controls.surname.hasError('maxlength')) {
+              <mat-error id="surname-error" role="alert">{{ 'UPLOAD_CANDIDATE.FIELDS.SURNAME_MAX' | translate }}</mat-error>
+            }
+          </mat-form-field>
+
+          <app-drop-files-zone [control]="uploadForm.controls.file" />
+
+          <button
+            matButton
+            type="submit"
+            [disabled]="isSubmitting()"
+            [attr.aria-busy]="isSubmitting()"
+            class="button-send"
+          >
+            {{
+              isSubmitting()
+                ? ('UPLOAD_CANDIDATE.ACTIONS.LOADING' | translate)
+                : ('UPLOAD_CANDIDATE.ACTIONS.SUBMIT' | translate)
+            }}
+          </button>
+
+          @if (isSubmitting()) {
+            <mat-progress-bar mode="indeterminate" aria-live="polite"></mat-progress-bar>
+          }
+        </form>
+      </mat-card>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-header__title">{{ 'CANDIDATE_TABLE.HEADER.TITLE' | translate }}</h2>
+      <p class="section-header__subtitle">{{ 'CANDIDATE_TABLE.HEADER.SUBTITLE' | translate }}</p>
+    </div>
+      <app-candidate-table />
+  </div>
+</div>

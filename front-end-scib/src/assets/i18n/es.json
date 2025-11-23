@@ -1,0 +1,83 @@
+{
+  "UPLOAD_CANDIDATE": {
+    "HEADER": {
+      "TITLE": "Enviar candidato",
+      "SUBTITLE": "Rellena el formulario y carga el archivo."
+    },
+    "TITLE": "Información del candidato",
+    "SUBTITLE": "Todos los campos son obligatorios.",
+    "FIELDS": {
+      "NAME_LABEL": "Nombre",
+      "NAME_PLACEHOLDER": "Ej: Ana",
+      "NAME_REQUIRED": "Campo obligatorio",
+      "NAME_MAX": "Máximo 80 caracteres",
+      "SURNAME_LABEL": "Apellido",
+      "SURNAME_PLACEHOLDER": "Ej: García",
+      "SURNAME_REQUIRED": "Campo obligatorio",
+      "SURNAME_MAX": "Máximo 80 caracteres",
+      "FILE_LABEL": "Archivo Excel"
+    },
+    "DROPZONE": {
+      "TITLE": "Arrastra y suelta el archivo aquí",
+      "SUBTITLE": "o haz clic para seleccionarlo",
+      "SELECTED": "Archivo seleccionado: {{FILE}}",
+      "ERROR_REQUIRED": "Adjunta un archivo."
+    },
+    "ACTIONS": {
+      "SUBMIT": "Enviar",
+      "LOADING": "Cargando..."
+    },
+    "SNACKBAR_SUCCESS": "Candidato cargado correctamente."
+  },
+  "CANDIDATE_TABLE": {
+    "HEADER": {
+      "TITLE": "Candidatos registrados",
+      "SUBTITLE": "Estos son los candidatos de nuestro banco de talento."
+    },
+    "TITLE": "Listado de candidatos",
+    "EMPTY": "Aún no se han cargado candidatos.",
+    "SEARCH": "Buscar candidato...",
+    "CLEAR_SEARCH": "Limpiar busqueda",
+    "LOADING": "Estamos cargando la información...",
+    "COLUMNS": {
+      "NAME": "Nombre",
+      "SURNAME": "Apellido",
+      "SENIORITY": "Seniority",
+      "YEARS": "Años",
+      "AVAILABILITY": "Disponibilidad"
+    },
+    "AVAILABILITY": {
+      "TRUE": "Disponible",
+      "FALSE": "No disponible"
+    }
+  },
+  "DROP_FILES_ZONE": {
+    "ARIA_LABEL": "Subir archivo Excel",
+    "TITLE": "Arrastra y suelta el archivo aquí",
+    "SUBTITLE": "o haz clic para seleccionarlo",
+    "SELECTED": "Archivo seleccionado: {{FILE}}",
+    "ERROR_REQUIRED": "Adjunta un archivo.",
+    "REMOVE": "Eliminar archivo"
+  },
+  "ERRORS": {
+    "UPLOAD_DEFAULT": "No se pudo cargar el candidato. Intenta nuevamente.",
+    "UPLOAD_AVAILABILITY": "La disponibilidad debe ser booleana.",
+    "UPLOAD_AVAILABILITY_REQUIRED": "La disponibilidad es obligatoria.",
+    "UPLOAD_YEARS": "Los años de experiencia deben ser un número positivo.",
+    "UPLOAD_FILE": "El archivo Excel es inválido o no se pudo leer.",
+    "UPLOAD_NO_SHEETS": "El archivo Excel no contiene hojas.",
+    "UPLOAD_SENIORITY": "El campo de seniority debe ser \"junior\" o \"senior\".",
+    "UPLOAD_MISSING_SENIORITY_COLUMN": "El archivo debe incluir una columna de seniority.",
+    "UPLOAD_MISSING_YEARS_COLUMN": "El archivo debe incluir una columna de años de experiencia.",
+    "UPLOAD_MISSING_AVAILABILITY_COLUMN": "El archivo debe incluir una columna de disponibilidad.",
+    "UPLOAD_UNKNOWN": "Ha ocurrido un error inesperado."
+  },
+  "COMMON": {
+    "CLOSE": "Cerrar"
+  },
+  "HEADER": {
+    "TITLE": "Bienvenido a SCIBTalent",
+    "SUBTITLE": "Completa la información a continuación para añadir candidatos a nuestro talento.",
+    "LANGUAGE": "Idioma"
+  }
+}

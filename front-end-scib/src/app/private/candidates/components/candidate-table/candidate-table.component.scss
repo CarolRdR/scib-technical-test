@@ -1,0 +1,45 @@
+.candidate-table-card {
+  padding: 1.5rem;
+  position: relative;
+  width: 100%;
+  min-height: 29rem;
+  max-height: 29rem;
+  background-color: var(--background-card);
+}
+
+.candidate-table-wrapper {
+  max-height: 18.75rem;
+  overflow-y: auto;
+}
+
+.candidate-table {
+  width: 100%;
+  background-color: white;
+}
+
+.empty-state {
+  margin: 1rem 0;
+  color: #666;
+  font-style: italic;
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.body {
+  overflow:auto;
+}
+
+.availability-chip {
+  pointer-events: none;
+  border: 1px solid white;
+
+  &--available {
+    background-color: #9ad69c !important;
+  }
+
+  &--unavailable {
+    background-color: #f08d8d !important;
+  }
+}
