@@ -11,5 +11,10 @@ Each subproject has its own README with detailed instructions (installation, scr
 2. Review the backend README to understand the endpoints (`GET /candidates`, `POST /candidates/upload`) and requirements (NestJS, database, etc.).
 
 > NOTE:
+>
 > - Backend and frontend must run in parallel (default `http://localhost:4200` and `http://localhost:3000`). Launch the backend first if you want the frontend to fetch the sample candidates already persisted.
 > - You will see concise comments across the codebase (especially around Excel parsing) to document business rules and ease future maintenance.
+
+## Author
+
+Built as part of the SCIB technical assignment. Feel free to fork or extend it.
