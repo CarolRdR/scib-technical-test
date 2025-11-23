@@ -30,3 +30,16 @@
 .body {
   overflow:auto;
 }
+
+.availability-chip {
+  pointer-events: none;
+  border: 1px solid white;
+
+  &--available {
+    background-color: #9ad69c !important;
+  }
+
+  &--unavailable {
+    background-color: #f08d8d !important;
+  }
+}

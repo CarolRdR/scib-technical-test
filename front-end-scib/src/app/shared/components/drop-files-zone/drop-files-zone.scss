@@ -1,7 +1,7 @@
 .upload-dropzone {
   border: 2px dashed #90a4ae;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0.8rem;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.2s ease, background-color 0.2s ease;
@@ -50,6 +50,6 @@
 }
 
 .delete-file {
-  color: #d32f2f;
+  color: var(--background-action-button);
   font-size: 1.5rem
 }

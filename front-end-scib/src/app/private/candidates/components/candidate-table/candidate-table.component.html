@@ -48,13 +48,28 @@
           </ng-container>
 
           <ng-container matColumnDef="availability">
-            <th mat-header-cell mat-sort-header *matHeaderCellDef sortActionDescription="Sort by availability">{{ 'CANDIDATE_TABLE.COLUMNS.AVAILABILITY' | translate }}</th>
+            <th mat-header-cell mat-sort-header *matHeaderCellDef sortActionDescription="Sort by availability">
+              {{ 'CANDIDATE_TABLE.COLUMNS.AVAILABILITY' | translate }}
+            </th>
             <td mat-cell *matCellDef="let candidate">
-              {{
-                candidate.availability
-                  ? ('CANDIDATE_TABLE.AVAILABILITY.TRUE' | translate)
-                  : ('CANDIDATE_TABLE.AVAILABILITY.FALSE' | translate)
-              }}
+              <mat-chip-set aria-label="Availability status">
+                <mat-chip
+                  class="availability-chip"
+                  [ngClass]="
+                    candidate.availability
+                      ? 'availability-chip--available'
+                      : 'availability-chip--unavailable'
+                  "
+                  [removable]="false"
+                  disableRipple
+                >
+                  {{
+                    candidate.availability
+                      ? ('CANDIDATE_TABLE.AVAILABILITY.TRUE' | translate)
+                      : ('CANDIDATE_TABLE.AVAILABILITY.FALSE' | translate)
+                  }}
+                </mat-chip>
+              </mat-chip-set>
             </td>
           </ng-container>
 

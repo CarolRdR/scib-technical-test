@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
@@ -16,7 +18,9 @@ import { buildCandidateSearchConfig } from '../../utils/candidate-search.utils';
   standalone: true,
   imports: [
     CommonModule,
+    MatChipsModule,
     MatCardModule,
+    MatPaginatorModule,
     MatProgressSpinnerModule,
     MatTableModule,
     MatSortModule,

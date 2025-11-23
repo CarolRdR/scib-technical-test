@@ -77,7 +77,8 @@
   },
   "HEADER": {
     "TITLE": "Welcome to SCIBTalent",
-    "SUBTITLE": "Please fill out your information below to add candidates to our talent pool."
+    "SUBTITLE": "Please fill out your information below to add candidates to our talent pool.",
+    "LANGUAGE": "Language"
   }
 }
 

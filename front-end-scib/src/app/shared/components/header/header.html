@@ -1,8 +1,25 @@
 <div class="header-layout">
-  <h1 class="header-layout__title mat-h1">
-    {{ "HEADER.TITLE" | translate}}
-  </h1>
-  <p class="header-layout__subtitle">
-    {{ "HEADER.SUBTITLE" | translate}}
-  </p>
+  <div class="header-layout__texts">
+    <h1 class="header-layout__texts-title">
+      {{ 'HEADER.TITLE' | translate }}
+    </h1>
+    <p class="header-layout__texts-subtitle">
+      {{ 'HEADER.SUBTITLE' | translate }}
+    </p>
+  </div>
+
+  <mat-form-field appearance="outline" class="language-selector">
+    <mat-label>{{ 'HEADER.LANGUAGE' | translate }}</mat-label>
+    <mat-select
+      [value]="selectedLanguage()"
+      (selectionChange)="onLanguageChange($event.value)"
+      aria-label="Language selector"
+    >
+      @for (language of availableLanguages; track language.code) {
+        <mat-option [value]="language.code">
+          {{ language.label }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 </div>

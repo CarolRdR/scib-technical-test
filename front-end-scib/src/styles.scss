@@ -65,7 +65,7 @@ body {
 }
 
 .search-bar .mat-mdc-form-field-infix,
-.input-bar .mat-mdc-form-field-infix {
+.input-bar .mat-mdc-form-field-infix{
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   height: 100%;
@@ -86,6 +86,15 @@ body {
 .input-bar .mat-mdc-form-field-flex {
   height: 2.8rem;
   align-items: center;
+}
+
+.language-selector .mat-mdc-form-field-flex {
+  height: 2.4rem;
+  align-items: center;
+}
+
+.language-selector .mat-mdc-text-field-wrapper {
+  height: 2rem;
 }
 
 /* Width scroll */
