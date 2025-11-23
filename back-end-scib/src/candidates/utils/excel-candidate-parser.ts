@@ -1,5 +1,4 @@
-import type { Express } from 'express';
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import * as XLSX from 'xlsx';
 import { candidateErrors } from '../../common/errors/candidate-errors';
@@ -14,26 +13,39 @@ type ExcelRow = Record<string, unknown>;
 
 @Injectable()
 export class ExcelCandidateParser {
-  // Reads the uploaded file and returns the parsed candidate data.
+  private readonly logger = new Logger(ExcelCandidateParser.name);
+
+  // Reads the uploaded file, parses it, and ensures any temp file is deleted afterwards.
   async parseCandidateFile(file: Express.Multer.File): Promise<CandidateExcelData> {
-    const buffer = await this.readUploadedFile(file);
-    return this.parseExcel(buffer);
+    const { buffer, tempPath } = await this.readUploadedFile(file);
+    try {
+      return this.parseExcel(buffer);
+    } finally {
+      if (tempPath) {
+        void fs.unlink(tempPath).catch((error) =>
+          this.logger.warn(`Failed to delete temp file ${tempPath}: ${error}`),
+        );
+      }
+    }
   }
 
-  // Fetches the file contents from memory or disk, throwing when no data is available.
-  private async readUploadedFile(file: Express.Multer.File): Promise<Buffer> {
+  // Loads the file contents from memory or disk and tracks the temp path (if any) for cleanup.
+  private async readUploadedFile(
+    file: Express.Multer.File,
+  ): Promise<{ buffer: Buffer; tempPath?: string }> {
     if (file.buffer?.length) {
-      return file.buffer;
+      return { buffer: file.buffer };
     }
 
     if (file.path) {
-      return fs.readFile(file.path);
+      const diskBuffer = await fs.readFile(file.path);
+      return { buffer: diskBuffer, tempPath: file.path };
     }
 
     throw candidateErrors.fileHasNoData();
   }
 
-  // Converts the Excel buffer into structured candidate attributes with validations.
+  // Converts the Excel buffer into validated candidate attributes.
   private parseExcel(buffer: Buffer): CandidateExcelData {
     try {
       const workbook = XLSX.read(buffer, { type: 'buffer' });
@@ -68,7 +80,7 @@ export class ExcelCandidateParser {
     }
   }
 
-  // Normalizes all column names to lowercase without surrounding spaces.
+  // Normalizes Excel column headers by trimming and lowercasing them.
   private normalizeRow(row: ExcelRow): ExcelRow {
     return Object.entries(row).reduce<ExcelRow>((acc, [key, value]) => {
       acc[key.trim().toLowerCase()] = value;
@@ -76,19 +88,19 @@ export class ExcelCandidateParser {
     }, {});
   }
 
-  // Ensures the seniority value is a valid string ("junior" or "senior").
+  // Validates and normalizes the seniority column.
   private parseSeniority(value: unknown): 'junior' | 'senior' {
     if (typeof value !== 'string') {
-      throw candidateErrors.seniorityMustBeString();
+      throw candidateErrors.seniorityMustBeString(value);
     }
     const normalized = value.trim().toLowerCase();
     if (!this.isValidSeniority(normalized)) {
-      throw candidateErrors.seniorityInvalidValue();
+      throw candidateErrors.seniorityInvalidValue(value);
     }
     return normalized;
   }
 
-  // Parses years of experience, enforcing positive integers.
+  // Parses years of experience and enforces positive integer values.
   private parseYears(value: unknown): number {
     const parsed =
       typeof value === 'number'
@@ -98,13 +110,13 @@ export class ExcelCandidateParser {
           : NaN;
 
     if (!Number.isInteger(parsed) || parsed <= 0) {
-      throw candidateErrors.yearsInvalidValue();
+      throw candidateErrors.yearsInvalidValue(value);
     }
 
     return parsed;
   }
 
-  // Parses availability, accepting booleans or their string representations.
+  // Parses availability, accepting boolean or string representations.
   private parseAvailability(value: unknown): boolean {
     if (typeof value === 'boolean') {
       return value;
@@ -119,10 +131,10 @@ export class ExcelCandidateParser {
       }
     }
 
-    throw candidateErrors.availabilityInvalidValue();
+    throw candidateErrors.availabilityInvalidValue(value);
   }
 
-  // Narrows seniority strings to the expected literals.
+  // Helper to ensure seniority strings match the accepted literals.
   private isValidSeniority(value: string): value is 'junior' | 'senior' {
     return value === 'junior' || value === 'senior';
   }

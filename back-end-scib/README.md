@@ -10,6 +10,7 @@ NestJS backend that receives candidate submissions from the Angular frontend, pa
 - Excel parsing powered by `xlsx`, validating required columns and transforming values.
 - `GET /candidates` returns every candidate previously saved on disk.
 - Basic validation/error handling (missing fields, invalid Excel data, wrong MIME type).
+- Automatic cleanup of temporary files and a lightweight logging layer (Nest Logger + interceptor) for diagnostics.
 - Unit tests for services/utils and e2e coverage of the upload flow (Jest + Supertest).
 
 ## Project Structure
@@ -90,9 +91,7 @@ Default URL: `http://localhost:3000`
 
 ## Nice-to-haves / Roadmap
 
-- More detailed DTO validation and custom error messages.
-- Cleanup of temporary files after parsing.
-- Lightweight logging layer for better diagnostics.
+- More detailed DTO validation and custom messages.
 
 ## Author
 

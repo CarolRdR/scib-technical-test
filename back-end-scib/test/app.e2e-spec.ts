@@ -102,7 +102,7 @@ describe('AppController (e2e)', () => {
         .expect(400);
 
       const body = response.body as ErrorResponse;
-      expect(body.message).toContain('Seniority must be a string');
+      expect(body.message).toContain('Column "seniority" must be a string');
     });
   });
 
