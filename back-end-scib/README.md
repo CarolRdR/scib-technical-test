@@ -1,44 +1,46 @@
-﻿# Backend - SCIB Technical Test
+# Backend – SCIB Technical Test
 
-## Descripcion general
+## Overview
 
-Este backend implementa la parte servidor de la prueba tecnica. Su responsabilidad es recibir los datos del formulario enviados desde el frontend, procesar un archivo Excel y generar un JSON unico con toda la informacion del candidato.
+NestJS backend that receives candidate submissions from the Angular frontend, parses a single-row Excel file, and returns a unified JSON payload (name, surname, seniority, years, availability). The frontend stores each response incrementally.
 
-## Caracteristicas principales
+## Key Features
 
-- Endpoint HTTP que recibe `name`, `surname` y un archivo Excel via `multipart/form-data`.
-- Procesamiento del Excel con la libreria `xlsx` para obtener seniority, anos de experiencia y disponibilidad.
-- Combinacion de los datos del formulario y del Excel en una sola respuesta JSON.
-- Validaciones basicas del contenido enviado y manejo inicial de errores.
-- Arquitectura limpia siguiendo principios SOLID y cobertura con tests de servicio/utilidades mediante Jest.
+- `POST /candidates/upload` accepts `name`, `surname`, and an Excel file via `multipart/form-data`.
+- Excel parsing powered by `xlsx`, validating required columns and transforming values.
+- `GET /candidates` returns every candidate previously saved on disk.
+- Basic validation/error handling (missing fields, invalid Excel data, wrong MIME type).
+- Unit tests for services/utils and e2e coverage of the upload flow (Jest + Supertest).
 
-## Estructura del proyecto
+## Project Structure
 
 ```
-backend/
 src/
   app.module.ts
   candidates/
     candidates.controller.ts
     candidates.service.ts
-  dto/
-  utils/
+    dto/
+    pipes/
+    storage/
+    utils/
 test/
+  app.e2e-spec.ts
 package.json
 tsconfig.json
 ```
 
-## Endpoints principales
+## API
 
-### `POST /candidates/upload`
+### POST /candidates/upload
 
-Recibe un formulario con:
+Form fields:
 
-- `name` - string
-- `surname` - string
-- `file` - archivo Excel (`.xlsx`)
+- `name` – string
+- `surname` – string
+- `file` – Excel (`.xlsx`) with one valid row containing `seniority`, `years`, `availability`
 
-Ejemplo de respuesta:
+Sample response:
 
 ```json
 {
@@ -50,62 +52,48 @@ Ejemplo de respuesta:
 }
 ```
 
-Este JSON sera almacenado por el frontend para construir el listado de candidatos.
+### GET /candidates
 
-### `GET /candidates`
+Returns the accumulated array of candidates so the frontend can rebuild the table after refreshes.
 
-Devuelve el array completo de candidatos ya procesados y persistidos por el backend. El frontend puede consumir este endpoint para reconstruir la tabla tras un refresh o reinicio del servidor.
+## Persistence
 
-## Persistencia en disco
+Accepted candidates are appended to `data/candidates.json`. The file is created automatically when the server starts. To reset the storage, delete the file or overwrite it with `[]`; the next request will recreate it.
 
-Cada candidato aceptado se guarda en `data/candidates.json`. Este archivo se crea automaticamente si no existe y contiene un array JSON con todos los registros acumulados.
+## Getting Started
 
-### Limpiar la informacion
+1. Install dependencies: `npm install`
+2. Start in development mode: `npm run start:dev`
 
-Para reiniciar el almacenamiento basta con dejar el fichero vacio (`[]`). Dos maneras rapidas:
+Default URL: `http://localhost:3000`
 
-1. Eliminar `data/candidates.json`; en el siguiente inicio del backend se volvera a crear vacio.
-2. Sobrescribir el contenido con `[]` (por ejemplo, usando tu editor o redireccionando `echo [] > data/candidates.json`).
+## Testing
 
-Ambas opciones borran definitivamente los registros, asi que solo ejecútalas cuando quieras reiniciar las pruebas.
+- `npm run test` – unit tests
+- `npm run test:watch` – watch mode
+- `npm run test:cov` – coverage report
+- `npm run test:e2e` – Supertest suite
 
-## Instalacion y ejecucion
+## Development Guidelines
 
-1. Instalar dependencias: `npm install`
-2. Levantar en modo desarrollo: `npm run start:dev`
+- Controllers stay thin; all business logic lives in services/providers.
+- Excel parsing/validation is encapsulated in `ExcelCandidateParser`.
+- Disk persistence uses a simple repository so it’s easy to swap later.
+- Every new helper/service should include Jest specs.
 
-El backend queda expuesto en `http://localhost:3000`.
-
-## Tests
-
-- `npm run test` - ejecuta la suite completa.
-- `npm run test:watch` - modo interactivo.
-- `npm run test:cov` - genera reporte de cobertura.
-
-Todos los servicios, utilidades o helpers nuevos deben incluir sus tests unitarios asociados.
-
-## Principios de desarrollo
-
-- Aplicacion estricta de principios SOLID y separacion de responsabilidades.
-- Controladores delegan la logica de negocio en servicios.
-- Logica de parsing, validacion y transformaciones encapsulada en servicios o utilidades reutilizables.
-- Codigo claro, mantenible y escalable.
-
-## Tecnologias utilizadas
+## Tech Stack
 
 - NestJS (TypeScript)
-- Multer para `multipart/form-data`
-- xlsx para leer Excel
-- Jest para pruebas unitarias
+- Multer for multipart uploads
+- `xlsx` for Excel parsing
+- Jest + Supertest for testing
 
-## Roadmap
+## Nice-to-haves / Roadmap
 
-- Anadir validaciones exhaustivas del formulario.
-- Profundizar en tests del servicio de parsing y del controlador.
-- Mejor manejo de errores ante Excel invalido o columnas ausentes.
-- Eliminar el archivo temporal una vez procesado.
-- Incorporar un sistema basico de logs.
+- More detailed DTO validation and custom error messages.
+- Cleanup of temporary files after parsing.
+- Lightweight logging layer for better diagnostics.
 
-## Autor
+## Author
 
-Proyecto desarrollado como parte de la prueba tecnica para SCIB.
+Built as part of the SCIB technical assignment. Feel free to fork or extend it.

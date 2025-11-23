@@ -23,4 +23,4 @@ async function bootstrap() {
   console.log(`API running on http://localhost:${port}`);
   console.log(`Docs on http://localhost:${port}/docs`);
 }
-bootstrap();
+void bootstrap();

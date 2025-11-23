@@ -79,18 +79,11 @@ describe('AppController (e2e)', () => {
     });
 
     it('should accept a valid Excel file and return the combined payload', async () => {
-      const excelBuffer = createExcelBuffer({
+      const response = await attachExcel(sendBaseRequest(), {
         seniority: 'senior',
         years: 7,
         availability: 'true',
-      });
-
-      const response = await sendBaseRequest()
-        .attach('file', excelBuffer, {
-          filename: 'candidate.xlsx',
-          contentType:
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        })
+      })
         .expect(201);
       expect(response.body).toEqual({
         name: 'John',
@@ -99,6 +92,17 @@ describe('AppController (e2e)', () => {
         years: 7,
         availability: true,
       });
+    });
+
+    it('should return 400 when excel data is invalid', async () => {
+      const response = await attachExcel(sendBaseRequest(), {
+        years: 2,
+        availability: true,
+      })
+        .expect(400);
+
+      const body = response.body as ErrorResponse;
+      expect(body.message).toContain('Seniority must be a string');
     });
   });
 
@@ -110,18 +114,11 @@ describe('AppController (e2e)', () => {
         .field('surname', 'Doe');
 
     it('should return candidates persisted from previous uploads', async () => {
-      const excelBuffer = createExcelBuffer({
+      await attachExcel(sendBaseRequest(), {
         seniority: 'junior',
         years: 4,
         availability: true,
-      });
-
-      await sendBaseRequest()
-        .attach('file', excelBuffer, {
-          filename: 'candidate.xlsx',
-          contentType:
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        })
+      })
         .expect(201);
 
       const response = await request(app.getHttpServer())
@@ -153,4 +150,15 @@ const createExcelBuffer = (row: Record<string, unknown>): Buffer => {
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
   const output = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
   return Buffer.isBuffer(output) ? output : Buffer.from(output);
+};
+
+const attachExcel = (
+  req: request.Test,
+  row: Record<string, unknown>,
+): request.Test => {
+  return req.attach('file', createExcelBuffer(row), {
+    filename: 'candidate.xlsx',
+    contentType:
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
 };

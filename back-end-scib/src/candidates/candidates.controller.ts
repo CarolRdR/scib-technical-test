@@ -10,12 +10,12 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { candidateErrors } from '../common/errors/candidate-errors';
 import { CandidatesService } from './candidates.service';
 import {
   CandidateUploadDto,
   CandidateUploadRequest,
 } from './dto/candidate-upload.dto';
+import { MulterFilePipe } from './pipes/multer-file.pipe';
 
 @Controller('candidates')
 export class CandidatesController {
@@ -41,35 +41,15 @@ export class CandidatesController {
         })
         .addMaxSizeValidator({ maxSize: 2 * 1024 * 1024 })
         .build({ fileIsRequired: true }),
+      new MulterFilePipe(),
     )
-    file: unknown,
+    file: Express.Multer.File,
   ) {
-    const name = String(formData.name);
-    const surname = String(formData.surname);
-    const uploadedFile = this.ensureUploadedFile(file);
-    const payload = {
-      name,
-      surname,
-      file: uploadedFile,
-    } satisfies CandidateUploadRequest;
+    const payload: CandidateUploadRequest = {
+      name: formData.name,
+      surname: formData.surname,
+      file,
+    };
     return this.candidatesService.processCandidateUpload(payload);
-  }
-
-  private ensureUploadedFile(file: unknown): Express.Multer.File {
-    if (!this.isMulterFile(file)) {
-      throw candidateErrors.uploadedFileInvalid();
-    }
-    return file;
-  }
-
-  private isMulterFile(file: unknown): file is Express.Multer.File {
-    if (!file || typeof file !== 'object') {
-      return false;
-    }
-    const candidate = file as Record<string, unknown>;
-    return (
-      typeof candidate.fieldname === 'string' &&
-      typeof candidate.mimetype === 'string'
-    );
   }
 }
