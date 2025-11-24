@@ -37,9 +37,14 @@ export class CandidatesController {
           fileType:
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           fallbackToMimetype: true,
+          // Magic-number checks reject some zipped XLSX buffers, so rely on MIME
+          // type plus the custom Multer pipe instead.
           skipMagicNumbersValidation: true,
         })
-        .addMaxSizeValidator({ maxSize: 2 * 1024 * 1024 })
+        .addMaxSizeValidator({
+          // 2MB keeps uploads snappy and prevents oversized Excel dumps.
+          maxSize: 2 * 1024 * 1024,
+        })
         .build({ fileIsRequired: true }),
       new MulterFilePipe(),
     )
