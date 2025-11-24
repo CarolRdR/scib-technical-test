@@ -5,5 +5,12 @@
     "seniority": "senior",
     "years": 5,
     "availability": true
+  },
+  {
+    "name": "maria",
+    "surname": "rodriguez peña",
+    "seniority": "junior",
+    "years": 2,
+    "availability": false
   }
 ]
