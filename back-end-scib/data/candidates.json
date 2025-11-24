@@ -9,13 +9,6 @@
   {
     "name": "maria",
     "surname": "rodriguez peña",
-    "seniority": "senior",
-    "years": 5,
-    "availability": true
-  },
-  {
-    "name": "luis",
-    "surname": "díaz sanchez",
     "seniority": "junior",
     "years": 2,
     "availability": false
