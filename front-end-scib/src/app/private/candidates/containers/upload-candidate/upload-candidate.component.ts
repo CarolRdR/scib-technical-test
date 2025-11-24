@@ -67,7 +67,7 @@ export class UploadCandidateComponent {
 
   public readonly isSubmitting = signal(false);
 
-  // Initializes component data when view loads.
+  // Initializes component data when view loads; fire-and-forget because the helper handles storing state.
   ngOnInit(): void {
     void this.loadExistingCandidates();
   }
